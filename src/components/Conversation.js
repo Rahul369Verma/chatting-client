@@ -25,14 +25,14 @@ const Conversation = ({ conversation, index, setMessageByConversation, clicked, 
       friendCollectionId: conversation.friendCollectionId
     }
     const getUser = async () => {
-      const res = await axiosInstance.post("friendId", friendCollId, { withCredentials: true })
+      const res = await axios.post(process.env.REACT_APP_API_URL + "/friendId", friendCollId, { withCredentials: true })
       const friendEmail = await res.data.members.find((e) => e !== state.email)
       setActiveStatus(active.some(u => u.userEmail === friendEmail))
-      const response = await axiosInstance.post("emailData", { email: friendEmail }, { withCredentials: true })
+      const response = await axios.post(process.env.REACT_APP_API_URL +"/emailData", { email: friendEmail }, { withCredentials: true })
       setFriendData(response.data)
     }
     getUser()
-  }, [conversation, state, active, axiosInstance])
+  }, [conversation, state, active])
   useEffect(() => {
     setSendConversation({
       "_id": conversation._id,

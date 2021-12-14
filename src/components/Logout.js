@@ -7,9 +7,10 @@ import Auth from '../isAuth';
 const Logout = async () => {
 
     const { dispatch } = useContext(Context)
-    const history = useHistory()
+	const axiosInstance = axios.create({baseURL: process.env.REACT_APP_API_URL})
+    
     try {
-        const response = await axios.get('http://localhost:5000/logout', {
+        const response = await axiosInstance.get('logout', {
             withCredentials: true
         })
         console.log("response", response)

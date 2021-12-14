@@ -33,7 +33,6 @@ const rootReducer = (state, action) => {
 // context Provider
 const Provider = ({ children }) => {
     const [state, dispatch] = useReducer(rootReducer, initialState)
-	const axiosInstance = axios.create({baseURL: process.env.REACT_APP_API_URL})
 
     useEffect(() => {
         const getData = async () => {

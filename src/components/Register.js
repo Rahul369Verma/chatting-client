@@ -17,7 +17,6 @@ const Register = () => {
 
 
 
-  const { state } = useContext(Context);
   const { dispatch } = useContext(Context);
 
 

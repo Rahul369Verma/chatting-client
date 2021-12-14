@@ -1,0 +1,18 @@
+.split {
+  height: 90%;
+  width: 50%;
+  position: absolute;
+  z-index: 1;
+  top: 10%;
+  overflow-x: hidden;
+}
+
+.left {
+  left: 0;
+  background-color: rgb(64, 147, 255);
+}
+
+.right {
+  right: 0;
+  background-color: rgb(194, 238, 122);
+}

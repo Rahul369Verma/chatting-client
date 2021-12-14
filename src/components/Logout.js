@@ -1,6 +1,5 @@
 import { useContext } from "react"
 import { Context } from '../context';
-import { useHistory } from 'react-router-dom';
 import axios from "axios";
 import Auth from '../isAuth';
 

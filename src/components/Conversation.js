@@ -16,7 +16,6 @@ const Conversation = ({ conversation, index, setMessageByConversation, clicked, 
   const [friendData, setFriendData] = useState({})
   const [activeStatus, setActiveStatus] = useState(false)
   const [sendConversation, setSendConversation] = useState({})
-	const axiosInstance = axios.create({baseURL: process.env.REACT_APP_API_URL})
 
 
 

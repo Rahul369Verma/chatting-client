@@ -346,7 +346,7 @@ const Chatting = () => {
 								<form className="d-flex" onSubmit={sendMessage} ref={(el) => { setScroll(el) }}>
 									<input style={{ height: "60px", width: "300px" }} className="form-control me-4 mt-2" value={inputData}
 										type="search" placeholder="Search" aria-label="Search" onChange={changeInput} />
-									<button className="btn btn-outline-success" type="submit">Search</button>
+									<button className="btn btn-outline-success" type="submit">Send</button>
 								</form> : <></>
 							}
 							{/* <InputGroup className="mb-3">

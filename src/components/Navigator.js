@@ -2,6 +2,7 @@ import { useContext, useState } from "react"
 import { Context } from '../context';
 import { SearchContext } from '../context/searchItem';
 import RegisterAdmin from './RegisterAdmin'
+import { useLocation } from 'react-router-dom';
 import { Nav, NavDropdown, Navbar, Container } from 'react-bootstrap';
 import axios from "axios";
 
@@ -13,6 +14,7 @@ const Navigator = () => {
   const { searchDispatch } = useContext(SearchContext)
   const [toggle, setToggle] = useState(false)
   const [searchData, setSearchData] = useState("")
+  const location = useLocation();
 	const axiosInstance = axios.create({baseURL: process.env.REACT_APP_API_URL})
 
 
@@ -90,11 +92,11 @@ const Navigator = () => {
 
           {(state.email || state.username) && (
             <>
-              <form className="d-flex" onSubmit={(e) => e.preventDefault()}>
+              {(location.pathname === "/chatting") && <form className="d-flex" onSubmit={(e) => e.preventDefault()}>
                 <input style={{ height: "34px" }} className="form-control me-2 mt-2" value={searchData}
                   type="search" placeholder="Search" aria-label="Search" onChange={changeInput} />
                 {/* <button className="btn btn-outline-success" type="submit">Search</button> */}
-              </form>
+              </form>}
 
               <Nav>
                 <li style={{ float: "left", paddingRight: "5px" }}>

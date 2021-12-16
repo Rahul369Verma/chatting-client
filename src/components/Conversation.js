@@ -43,7 +43,6 @@ const Conversation = ({ conversation, index, setMessageByConversation, clicked, 
   }, [conversation, activeStatus])
 
   return (
-    <div>
       <Card
         bg={clicked._id === conversation._id ? "primary" : "light"}
         key={index}
@@ -62,7 +61,6 @@ const Conversation = ({ conversation, index, setMessageByConversation, clicked, 
           <Card.Text>{friendData.email}</Card.Text>
         </Card.Body>
       </Card>
-    </div>
   )
 }
 

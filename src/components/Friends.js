@@ -11,7 +11,7 @@ const Friends = ({ data, index, setMessageByFriend, clicked }) => {
   // const [color, setColor] = useState("light")
   const [user, setUser] = useState({})
   const { state } = useContext(Context)
-	const axiosInstance = axios.create({baseURL: process.env.REACT_APP_API_URL})
+  const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
 
 
 
@@ -24,10 +24,10 @@ const Friends = ({ data, index, setMessageByFriend, clicked }) => {
   }
 
   // const changeBlue = (e) => {
-    // setColor("primary")
+  // setColor("primary")
   // }
   // const changeLight = (e) => {
-    // setColor("light")
+  // setColor("light")
   // }
 
   // const setMessage = async (e) => {
@@ -61,23 +61,21 @@ const Friends = ({ data, index, setMessageByFriend, clicked }) => {
 
 
   return (
-    <div>
-      <Card
-        bg={clicked === data? "primary": "light"}
-        key={index}
-        text={clicked === data? "light": "dark"}
-        style={styleObj}
-        className="mb-4"
-        // onMouseOver={changeBlue}
-        // onMouseLeave={changeLight}
-        onClick={(e) => setMessageByFriend(data)}
-      >
-        <Card.Body>
-          <Card.Title>{user.name}</Card.Title>
-          <Card.Text>{user.email}</Card.Text>
-        </Card.Body>
-      </Card>
-    </div>
+    <Card
+      bg={clicked === data ? "primary" : "light"}
+      key={index}
+      text={clicked === data ? "light" : "dark"}
+      style={styleObj}
+      className="mb-4"
+      // onMouseOver={changeBlue}
+      // onMouseLeave={changeLight}
+      onClick={(e) => setMessageByFriend(data)}
+    >
+      <Card.Body>
+        <Card.Title>{user.name}</Card.Title>
+        <Card.Text>{user.email}</Card.Text>
+      </Card.Body>
+    </Card>
   )
 }
 

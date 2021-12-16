@@ -28,7 +28,7 @@ const Chatting = () => {
 	const [arrivalMessage, setArrivalMessage] = useState(null)
 	const [activeUsers, setActiveUsers] = useState([])
 	const socket = useRef()
-	const axiosInstance = axios.create({baseURL: process.env.REACT_APP_API_URL})
+	const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
 
 
 	const changeInput = (e) => {
@@ -92,16 +92,16 @@ const Chatting = () => {
 
 	useEffect(() => {
 		const seen = async (id) => {
-			await axios.post(process.env.REACT_APP_API_URL+"/seen",
+			await axios.post(process.env.REACT_APP_API_URL + "/seen",
 				{ id: id }, { withCredentials: true })
-			const response = await axios.post(process.env.REACT_APP_API_URL+"/messageGet",
+			const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
 				{ conversationId: id }, { withCredentials: true })
 			setMessageData(response.data)
 		}
 		const delivered = async (id) => {
-			await axios.post(process.env.REACT_APP_API_URL+"/delivered",
+			await axios.post(process.env.REACT_APP_API_URL + "/delivered",
 				{ id: id }, { withCredentials: true })
-			const response = await axios.post(process.env.REACT_APP_API_URL+"/messageGet",
+			const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
 				{ conversationId: id }, { withCredentials: true })
 			setMessageData(response.data)
 		}
@@ -127,14 +127,14 @@ const Chatting = () => {
 
 	useEffect(() => {
 		const getConversations = async () => {
-			const response = await axios.get(process.env.REACT_APP_API_URL+"/allConversations", { withCredentials: true })
+			const response = await axios.get(process.env.REACT_APP_API_URL + "/allConversations", { withCredentials: true })
 			setConversations(response.data)
 		}
 		if (arrivalMessage?.friend) {
 			getConversations()
 		} else {
-			console.log(arrivalMessage)
 			if (arrivalMessage) {
+				console.log(arrivalMessage)
 				if (messageConversation?._id === arrivalMessage.conversationId) {
 					socket.current.emit("messageSeen", {
 						conversationId: arrivalMessage.conversationId,
@@ -178,19 +178,17 @@ const Chatting = () => {
 
 
 	useEffect(() => {
-		let isMounted = true;
 		const getUser = async () => {
 			try {
-				const response = await axios.get(process.env.REACT_APP_API_URL+"/allConversations", { withCredentials: true })
-				console.log("from useEffect", response)
-				if (isMounted) setConversations(response.data)
+				const response = await axios.get(process.env.REACT_APP_API_URL + "/allConversations", { withCredentials: true })
+				setConversations(response.data)
 			} catch (err) {
 				if (err.response?.status === 403) {
 					console.log("receive 403 from token user");
 					try {
-						await axios.get(process.env.REACT_APP_API_URL+"/refreshToken", { withCredentials: true })
-						const res = await axios.get(process.env.REACT_APP_API_URL+"/allConversations", { withCredentials: true })
-						if (isMounted) setConversations(res.data)
+						await axios.get(process.env.REACT_APP_API_URL + "/refreshToken", { withCredentials: true })
+						const res = await axios.get(process.env.REACT_APP_API_URL + "/allConversations", { withCredentials: true })
+						setConversations(res.data)
 						console.log("login with RT user");
 					} catch (error) {
 						Auth.signOut()
@@ -206,16 +204,15 @@ const Chatting = () => {
 			getUser()
 			setMessageFriend(false)
 		}
-		return () => { isMounted = false }
-	}, [state, search])
+	}, [search])
 
 	useEffect(() => {
 		const sendSeen = async (c) => {
-			await axios.post(process.env.REACT_APP_API_URL+"/seen",
+			await axios.post(process.env.REACT_APP_API_URL + "/seen",
 				{ id: c._id }, { withCredentials: true })
 		}
 		const sendDelivered = async (c) => {
-			await axios.post(process.env.REACT_APP_API_URL+"/delivered",
+			await axios.post(process.env.REACT_APP_API_URL + "/delivered",
 				{ conversation: c._id }, { withCredentials: true })
 		}
 		conversations.forEach(i => {
@@ -236,7 +233,7 @@ const Chatting = () => {
 	useEffect(() => {
 		const getConversation = async () => {
 			try {
-				const response = await axios.post(process.env.REACT_APP_API_URL+"/messageGet",
+				const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
 					{ conversationId: messageConversation._id }, { withCredentials: true })
 				setMessageData(response.data)
 			} catch (error) {
@@ -277,7 +274,6 @@ const Chatting = () => {
 		}
 	}
 
-	console.log(conversations)
 
 	if (Auth.getAuth()) {
 		return (
@@ -286,7 +282,7 @@ const Chatting = () => {
 					<Modal.Dialog>
 
 						<Modal.Body>
-							{search.searchedItem === null && <Modal.Header >
+							{search.searchedItem === null && <Modal.Header key="recent-search" >
 								<Modal.Title>Recent</Modal.Title>
 							</Modal.Header>}
 
@@ -295,27 +291,27 @@ const Chatting = () => {
 									if (item.email === state.email) {
 										return null
 									}
-									return <Conversation conversation={item} index={i} setMessageByConversation={MessageConversation} clicked={messageConversation} active={activeUsers} />
+									return <Conversation conversation={item} key={i} index={i} setMessageByConversation={MessageConversation} clicked={messageConversation} active={activeUsers} />
 								})) : (
 									<>
-										<Modal.Header >
+										<Modal.Header key="recent">
 											<Modal.Title>Recent</Modal.Title>
 										</Modal.Header>
 										{search.searchedItem.conversations.map((searchItem, i) => (
-											<Conversation conversation={searchItem} index={i} setMessageByConversation={MessageConversation} clicked={messageConversation} active={activeUsers} />
+											<Conversation conversation={searchItem} key={i} index={i} setMessageByConversation={MessageConversation} clicked={messageConversation} active={activeUsers} />
 										))}
-										<Modal.Header >
+										<Modal.Header key="friends">
 											<Modal.Title>Friends</Modal.Title>
 										</Modal.Header>
 										{search.searchedItem.friends.map((searchItem, i) => (
-											<Friends data={searchItem} index={i} setMessageByFriend={MessageFriend} clicked={messageFriend} />
+											<Friends data={searchItem} key={i} index={i} setMessageByFriend={MessageFriend} clicked={messageFriend} />
 										))}
-										<Modal.Header >
+										<Modal.Header key="others">
 											<Modal.Title>Others</Modal.Title>
 										</Modal.Header>
 										{search.searchedItem.others.map((searchItem, i) => {
 											if (searchItem.email === state.email) return null
-											return <Others data={searchItem} index={i} />
+											return <Others data={searchItem} key={i} index={i} />
 										})}
 									</>
 								)

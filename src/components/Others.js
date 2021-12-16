@@ -11,7 +11,7 @@ const Others = ({ data, index }) => {
 
   const [color, setColor] = useState("light")
   const { state } = useContext(Context)
-	const axiosInstance = axios.create({baseURL: process.env.REACT_APP_API_URL})
+  const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
 
 
 
@@ -34,9 +34,9 @@ const Others = ({ data, index }) => {
     try {
       const response = await axiosInstance.post("addFriend",
         { senderEmail: state.email, receiverEmail: data.email }, { withCredentials: true })
-      if(response.data === null){
+      if (response.data === null) {
         console.log("you are already friends")
-      }else{
+      } else {
         console.log("Friend Added Successfully")
       }
     } catch (error) {
@@ -48,23 +48,21 @@ const Others = ({ data, index }) => {
 
 
   return (
-    <div>
-      <Card
-        bg={color}
-        key={index}
-        text="Light"
-        style={styleObj}
-        className="mb-4"
-        onMouseOver={changeBlue}
-        onMouseLeave={changeLight}
-        onClick={sendRequest}
-      >
-        <Card.Body>
-          <Card.Title>{data.name}</Card.Title>
-          <Card.Text>{data.email}</Card.Text>
-        </Card.Body>
-      </Card>
-    </div>
+    <Card
+      bg={color}
+      key={index}
+      text="Light"
+      style={styleObj}
+      className="mb-4"
+      onMouseOver={changeBlue}
+      onMouseLeave={changeLight}
+      onClick={sendRequest}
+    >
+      <Card.Body>
+        <Card.Title>{data.name}</Card.Title>
+        <Card.Text>{data.email}</Card.Text>
+      </Card.Body>
+    </Card>
   )
 }
 

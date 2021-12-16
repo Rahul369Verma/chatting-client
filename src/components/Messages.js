@@ -49,17 +49,6 @@ const Messages = ({ message, index, conversation }) => {
         </small>
         {message.senderEmail === state.email && showTicks()}
       </div>
-      {/* <Card
-        bg="info"
-        key="2"
-        text="light"
-        style={{ width: '20rem' }}
-        className="mb-4"
-      >
-        <Card.Body>
-          <Card.Text>Light Card Title </Card.Text>
-        </Card.Body>
-      </Card> */}
     </div>
   )
 }

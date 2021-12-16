@@ -332,7 +332,7 @@ const Chatting = () => {
 						<Modal.Body>
 							{
 								messageData.map((m, i) => (
-									< Messages message={m} index={i} conversation={messageConversation} />
+									< Messages message={m} key={i} index={i} conversation={messageConversation} />
 								))
 							}
 						</Modal.Body>

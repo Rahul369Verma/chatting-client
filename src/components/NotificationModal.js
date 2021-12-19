@@ -16,7 +16,7 @@ const NotificationModal = ({ setNotificationReceived, isOpen, toggleModal }) => 
 
   useEffect(() => {
     socket.socket?.current.on("notification", async () => {
-      const response = await axios.get(process.env.REACT_APP_API_URL + "/allNotifications", { withCredentials: true })
+      const response = await axios.get(process.env.REACT_APP_API_URL + "/allNotification", { withCredentials: true })
       if (isOpen) {
         setAllNotifications(response.data)
       }
@@ -25,13 +25,15 @@ const NotificationModal = ({ setNotificationReceived, isOpen, toggleModal }) => 
 
   useEffect(() => {
     const getAllNotifications = async () => {
-      const response = await axios.get(process.env.REACT_APP_API_URL + "/allNotifications", { withCredentials: true })
+      const response = await axios.get(process.env.REACT_APP_API_URL + "/allNotification", { withCredentials: true })
       for (let i = 0; i < response.data.length; i++) {
-        if(response.data[i].status === "notSeen"){
+        if (response.data[i].status === "notSeen") {
           setNotificationReceived(true)
         }
       }
-      setAllNotifications(response.data)
+      if (isOpen) {
+        setAllNotifications(response.data)
+      }
     }
     getAllNotifications()
     return () => { setAllNotifications(false) }

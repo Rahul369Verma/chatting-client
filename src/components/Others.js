@@ -1,7 +1,8 @@
-import { useState, useContext } from "react";
-import { Card } from "react-bootstrap";
+import { useState, useContext, useEffect } from "react";
+import { Card, Button } from "react-bootstrap";
 import axios from "axios";
 import { Context } from '../context';
+import { SocketContext } from "../context/socket";
 
 
 
@@ -9,57 +10,58 @@ import { Context } from '../context';
 
 const Others = ({ data, index }) => {
 
-  const [color, setColor] = useState("light")
   const { state } = useContext(Context)
+  const { socket } = useContext(SocketContext)
+  const [checkRequest, setCheckRequest] = useState("")
   const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
 
 
 
   const styleObj = {
     width: '29rem',
-    cursor: "pointer",
-    "&:hover": {
-      background: "blue"
-    },
   }
 
-  const changeBlue = (e) => {
-    setColor("primary")
-  }
-  const changeLight = (e) => {
-    setColor("light")
-  }
 
-  const sendRequest = async (e) => {
+  const sendRequest = async () => {
     try {
-      const response = await axiosInstance.post("addFriend",
+      setCheckRequest(true)
+      const response = await axiosInstance.post("sendFriendRequest",
         { senderEmail: state.email, receiverEmail: data.email }, { withCredentials: true })
-      if (response.data === null) {
-        console.log("you are already friends")
-      } else {
-        console.log("Friend Added Successfully")
-      }
+        let email = data.email
+      socket.socket?.current.emit("notification", {email})
     } catch (error) {
+      setCheckRequest(false)
       console.log(error)
     }
-
   }
+  const cancelRequest = async () => {
+    const response = await axiosInstance.post("cancelFriendRequest",
+      { senderEmail: state.email, receiverEmail: data.email }, { withCredentials: true })
+    setCheckRequest(false)
+    console.log("notification removed", response.data)
+  }
+
+  useEffect(() => {
+    const checkRequest = async () => {
+      const response = await axios.post(process.env.REACT_APP_API_URL + "/checkFriendRequest",
+        { senderEmail: state.email, receiverEmail: data.email, type: "friendRequest" }, { withCredentials: true })
+      setCheckRequest(response.data)
+    }
+    checkRequest()
+    return() => {setCheckRequest("")}
+  }, [data, state])
 
 
 
   return (
     <Card
-      bg={color}
       key={index}
       text="Light"
       style={styleObj}
       className="mb-4"
-      onMouseOver={changeBlue}
-      onMouseLeave={changeLight}
-      onClick={sendRequest}
     >
       <Card.Body>
-        <Card.Title>{data.name}</Card.Title>
+        <Card.Title>{data.name}{checkRequest === ""? <></> : (checkRequest ? <Button style={{ marginLeft: "20%" }} onClick={cancelRequest}>Cancel</Button> : <Button style={{ marginLeft: "20%" }} onClick={sendRequest}>Add Friend</Button>)}</Card.Title>
         <Card.Text>{data.email}</Card.Text>
       </Card.Body>
     </Card>

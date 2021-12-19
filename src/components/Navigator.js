@@ -1,21 +1,24 @@
-import { useContext, useState } from "react"
+import { useContext, useState, useEffect } from "react"
 import { Context } from '../context';
 import { SearchContext } from '../context/searchItem';
 import RegisterAdmin from './RegisterAdmin'
 import { useLocation } from 'react-router-dom';
 import { Nav, NavDropdown, Navbar, Container } from 'react-bootstrap';
 import axios from "axios";
-
-
+import NotificationModal from "./NotificationModal";
+import { SocketContext } from "../context/socket";
 
 
 const Navigator = () => {
   const { state } = useContext(Context)
+  const { socket } = useContext(SocketContext)
   const { searchDispatch } = useContext(SearchContext)
+  const [notificationReceived, setNotificationReceived] = useState(false)
   const [toggle, setToggle] = useState(false)
+  const [toggleNotification, setToggleNotification] = useState(false)
   const [searchData, setSearchData] = useState("")
   const location = useLocation();
-	const axiosInstance = axios.create({baseURL: process.env.REACT_APP_API_URL})
+  const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
 
 
   const changeInput = async (e) => {
@@ -44,10 +47,25 @@ const Navigator = () => {
     setToggle(!toggle);
   }
 
-  useState(() => { }, [state])
+  const toggleNotificationModal = async () => {
+    if (toggleNotification) {
+      setToggleNotification(!toggleNotification);
+      setNotificationReceived(false)
+      await axiosInstance.get("seenNotifications", { withCredentials: true })
+    } else {
+      setToggleNotification(!toggleNotification);
+    }
+  }
+
+  useEffect(() => {
+    socket.socket?.current.on("notification", () => {
+      console.log("running")
+      setNotificationReceived(true)
+    })
+  }, [socket])
 
   return (
-    <Navbar style={{ zIndex: "2", position: "sticky", height: "62px" }} bg="light" expand="lg">
+    <Navbar style={{ zIndex: "2", position: "sticky", height: "65px" }} bg="light" expand="lg">
       <Container>
         <Navbar.Brand href="/">
           <img
@@ -64,10 +82,13 @@ const Navigator = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             {(state.type === "admin") ? (
-              <Nav.Link
-                onClick={toggleModal} >
-                Register Admin
-              </Nav.Link>
+              <>
+                <Nav.Link
+                  onClick={toggleModal} >
+                  Register Admin
+                </Nav.Link>
+              </>
+
             ) : (
               (state.type === "normal") ? (
                 <></>
@@ -79,6 +100,7 @@ const Navigator = () => {
               )
             )}
             <RegisterAdmin isOpen={toggle} toggleModal={toggleModal} />
+            <NotificationModal setNotificationReceived={setNotificationReceived} isOpen={toggleNotification} toggleModal={toggleNotificationModal} />
             <Nav.Link href="/chatting">Chatting</Nav.Link>
             <NavDropdown title="Dropdown" id="basic-nav-dropdown">
 
@@ -92,6 +114,11 @@ const Navigator = () => {
 
           {(state.email || state.username) && (
             <>
+              <Nav.Link
+                onClick={toggleNotificationModal} >
+                {notificationReceived ? <ion-icon size="large" style={{ color: "red" }} name="notifications"></ion-icon> :
+                  <ion-icon size="large" style={{ color: "pink" }} name="notifications"></ion-icon>}
+              </Nav.Link>
               {(location.pathname === "/chatting") && <form className="d-flex" onSubmit={(e) => e.preventDefault()}>
                 <input style={{ height: "34px" }} className="form-control me-2 mt-2" value={searchData}
                   type="search" placeholder="Search" aria-label="Search" onChange={changeInput} />

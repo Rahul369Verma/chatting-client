@@ -19,6 +19,7 @@ const Logout = async () => {
         await Auth.signOut()
         await sessionStorage.removeItem("user")
         await sessionStorage.removeItem("messageConversation")
+		await sessionStorage.removeItem("friendData")
         await sessionStorage.removeItem("messageFriend")
         window.location.replace("/login")
         // history.push("/login")

@@ -11,6 +11,7 @@ import { Modal } from "react-bootstrap";
 import Auth from '../isAuth';
 import { SearchContext } from '../context/searchItem';
 import { io } from "socket.io-client"
+import { SocketContext } from "../context/socket";
 
 
 
@@ -19,13 +20,15 @@ const Chatting = () => {
 
 	const { state } = useContext(Context)
 	const [scroll, setScroll] = useState("")
+	const [friendData, setFriendData] = useState(JSON.parse(sessionStorage.getItem("friendData")) || {})
 	const [conversations, setConversations] = useState([])
 	const [messageConversation, setMessageConversation] = useState(false)
 	const [messageFriend, setMessageFriend] = useState(false)
 	const { search } = useContext(SearchContext)
+	const { socketDispatch } = useContext(SocketContext)
 	const [messageData, setMessageData] = useState([])
 	const [inputData, setInputData] = useState("")
-	const [arrivalMessage, setArrivalMessage] = useState(null)
+	const [arrivalMessage, setArrivalMessage] = useState(false)
 	const [activeUsers, setActiveUsers] = useState([])
 	const socket = useRef()
 	const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
@@ -33,6 +36,11 @@ const Chatting = () => {
 
 	const changeInput = (e) => {
 		setInputData(e.target.value);
+		if (messageConversation) {
+			if (friendData) {
+				socket.current.emit("typing", { messageConversation: messageConversation, friendData: friendData })
+			}
+		}
 	}
 
 
@@ -83,7 +91,7 @@ const Chatting = () => {
 
 	useEffect(() => {
 		const scrollToBottom = () => {
-			scroll.scrollIntoView({ behavior: "smooth" });
+			scroll?.scrollIntoView({ behavior: "smooth" });
 		}
 		if (scroll !== "") {
 			scrollToBottom()
@@ -91,39 +99,13 @@ const Chatting = () => {
 	}, [messageData, scroll])
 
 	useEffect(() => {
-		const seen = async (id) => {
-			await axios.post(process.env.REACT_APP_API_URL + "/seen",
-				{ id: id }, { withCredentials: true })
-			const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
-				{ conversationId: id }, { withCredentials: true })
-			setMessageData(response.data)
-		}
-		const delivered = async (id) => {
-			await axios.post(process.env.REACT_APP_API_URL + "/delivered",
-				{ id: id }, { withCredentials: true })
-			const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
-				{ conversationId: id }, { withCredentials: true })
-			setMessageData(response.data)
-		}
-
 		socket.current = io(process.env.REACT_APP_SOCKET_URL)
-		socket.current.on("getMessage", (data) => {
-			setArrivalMessage({
-				friend: data.friend,
-				conversationId: data.conversationId,
-				senderEmail: data.senderEmail,
-				message: data.text,
-				createdAt: Date.now()
-			})
+		socketDispatch({
+			type: "Change",
+			payload: socket
 		})
-		socket.current.on("getMessageSeen", ({ conversationId }) => {
-			console.log("id received", conversationId)
-			seen(conversationId)
-		})
-		socket.current.on("getMessageDelivered", ({ conversationId }) => {
-			delivered(conversationId)
-		})
-	}, []) //to run single time only
+
+	}, [socketDispatch]) //to run single time only
 
 	useEffect(() => {
 		const getConversations = async () => {
@@ -132,6 +114,7 @@ const Chatting = () => {
 		}
 		if (arrivalMessage?.friend) {
 			getConversations()
+			setArrivalMessage(false)
 		} else {
 			if (arrivalMessage) {
 				console.log(arrivalMessage)
@@ -171,9 +154,41 @@ const Chatting = () => {
 	}, [state])
 
 	useEffect(() => {
+		const seen = async (id) => {
+			await axios.post(process.env.REACT_APP_API_URL + "/seen",
+				{ id: id }, { withCredentials: true })
+			const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
+				{ conversationId: id }, { withCredentials: true })
+			setMessageData(response.data)
+		}
+		const delivered = async (id) => {
+			await axios.post(process.env.REACT_APP_API_URL + "/delivered",
+				{ id: id }, { withCredentials: true })
+			const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
+				{ conversationId: id }, { withCredentials: true })
+			setMessageData(response.data)
+		}
 		socket.current.on("welcome", message => {
 			console.log(message)
 		})
+		socket.current.on("getMessage", (data) => {
+			console.log("message Received")
+			setArrivalMessage({
+				friend: data.friend,
+				conversationId: data.conversationId,
+				senderEmail: data.senderEmail,
+				message: data.text,
+				createdAt: Date.now()
+			})
+		})
+		socket.current.on("getMessageSeen", ({ conversationId }) => {
+			console.log("id received", conversationId)
+			seen(conversationId)
+		})
+		socket.current.on("getMessageDelivered", ({ conversationId }) => {
+			delivered(conversationId)
+		})
+		console.log("hello")
 	}, [socket])
 
 
@@ -247,11 +262,13 @@ const Chatting = () => {
 		}
 	}, [messageConversation])
 
-	const MessageConversation = (c) => {
-		sessionStorage.setItem("messageConversation", JSON.stringify(c));
+	const MessageConversation = (conversation, friendData) => {
+		sessionStorage.setItem("messageConversation", JSON.stringify(conversation));
+		sessionStorage.setItem("friendData", JSON.stringify(friendData));
 		sessionStorage.removeItem("messageFriend")
 		setMessageFriend(false)
-		setMessageConversation(c)
+		setFriendData(friendData)
+		setMessageConversation(conversation)
 	}
 
 	const MessageFriend = async (friend) => {
@@ -261,6 +278,7 @@ const Chatting = () => {
 			if (response.data === "") {
 				sessionStorage.setItem("messageFriend", JSON.stringify(friend));
 				sessionStorage.removeItem("messageConversation")
+				sessionStorage.removeItem("friendData")
 				setMessageConversation(false)
 				setMessageFriend(friend)
 			} else {
@@ -273,6 +291,7 @@ const Chatting = () => {
 			console.log(error)
 		}
 	}
+
 
 
 	if (Auth.getAuth()) {

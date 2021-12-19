@@ -99,7 +99,7 @@ const Chatting = () => {
 	}, [messageData, scroll])
 
 	useEffect(() => {
-		socket.current = io(process.env.REACT_APP_SOCKET_URL)
+		socket.current = io(process.env.REACT_APP_SOCKET_URL,, { transports: ['websocket'] })
 		socketDispatch({
 			type: "Change",
 			payload: socket

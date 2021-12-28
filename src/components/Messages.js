@@ -8,7 +8,7 @@ import { SocketContext } from "../context/socket";
 
 
 
-const Messages = ({ setMessageConversation, message, index, messageConversationId, messageConversationLastId, setScroll }) => {
+const Messages = ({ setMessageConversation, message, index, messageConversationId, messageConversationLastId, messageConversationNewMessage, setScroll }) => {
 
 
   const { state } = useContext(Context)
@@ -74,15 +74,17 @@ const Messages = ({ setMessageConversation, message, index, messageConversationI
     const falseNewMessage = async (id) => {
       await axios.post(process.env.REACT_APP_API_URL + "/allSeen",
         { id: id }, { withCredentials: true })
-      setMessageConversation((prev) => ({...prev, newMessage: false}))
+      setMessageConversation((prev) => ({ ...prev, newMessage: false }))
     }
-    if (message.senderEmail !== state.email) {
-      if (message._id === messageConversationLastId) {
-        console.log(messageConversationLastId)
-        falseNewMessage(messageConversationId)
+    if (messageConversationNewMessage) {
+      if (message.senderEmail !== state.email) {
+        if (message._id === messageConversationLastId) {
+          console.log(messageConversationLastId)
+          falseNewMessage(messageConversationId)
+        }
       }
     }
-  }, [message, messageConversationId, messageConversationLastId, state, setMessageConversation])
+  }, [message, messageConversationId, messageConversationLastId, state, setMessageConversation, messageConversationNewMessage])
 
 
   return (

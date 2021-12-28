@@ -284,7 +284,7 @@ const Chatting = () => {
 						<ul className="force-overflow scrollbar" id="message-scroll">
 							{
 								messageConversation && messageData.map((m, i) => (
-									< Messages setMessageConversation={setMessageConversation} setScroll={setScroll} message={m} key={i} index={i} messageConversationId={messageConversation._id} messageConversationLastId={messageConversation.lastMessageId} />
+									< Messages messageConversationNewMessage={messageConversation.newMessage} setMessageConversation={setMessageConversation} setScroll={setScroll} message={m} key={i} index={i} messageConversationId={messageConversation._id} messageConversationLastId={messageConversation.lastMessageId} />
 								))
 							}
 						</ul>

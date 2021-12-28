@@ -57,7 +57,7 @@ const Chat = ({ messageConversation, MessageConversation, activeUsers }) => {
       if (response.data.n !== 0) {
         socket?.socket?.current.emit("messageDelivered", {
           all: true,
-          _id: false,
+          conversationId: c._id,
           senderEmail: c.senderEmail
         })
       }

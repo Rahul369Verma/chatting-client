@@ -33,6 +33,7 @@ const SendInput = ({ setMessageConversation , MessageConversation, messageConver
     try {
       const response = await axiosInstance.post("messagePost", messageForm, { withCredentials: true })
       setInputData("")
+      console.log(response.data)
       setMessageConversation((prev) => ({...prev, lastMessageId: response.data.messageSaved._id, lastMessage: messageForm.message}))
       setMessageData(prev => [...prev, response.data.messageSaved])
       if (messageConversationId) {

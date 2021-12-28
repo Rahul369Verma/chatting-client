@@ -68,7 +68,9 @@ const Notification = ({ RemoveNotification, data, index }) => {
             className="mb-4"
           >
             <Card.Body>
-              <Card.Title>Friend Request received from {user.name}({user.email})</Card.Title>
+              <Card.Title>Friend Request received from {user?.name}({user?.email})
+                <ion-icon style={{ cursor: "pointer", marginLeft: "40%" }} onClick={deleteNotification} name="trash"></ion-icon>
+              </Card.Title>
               <Button onClick={() => { acceptRequest(data) }}>Accept</Button>
               <Button onClick={() => { removeRequest(data) }}>Remove</Button>
             </Card.Body>
@@ -82,7 +84,7 @@ const Notification = ({ RemoveNotification, data, index }) => {
             >
               <Card.Body>
                 <Card.Title>Accepted Friend Request
-                <ion-icon style={{ cursor: "pointer", marginLeft: "40%" }} onClick={deleteNotification} name="trash"></ion-icon>
+                  <ion-icon style={{ cursor: "pointer", marginLeft: "40%" }} onClick={deleteNotification} name="trash"></ion-icon>
                 </Card.Title>
                 <Card.Text>{data.senderEmail} accepted your friend Request.</Card.Text>
               </Card.Body>

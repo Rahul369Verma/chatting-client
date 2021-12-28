@@ -1,0 +1,39 @@
+.chat-list li .unread-msg-user {
+  font-weight: 600;
+}
+.chat-user-img {
+  position: relative;
+}
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.badge-soft-dark {
+  color: #343a40;
+  background-color: rgba(52,58,64,.18);
+}
+
+.chat-list-conversation {
+  display: block;
+  padding: 5px 0px;
+  cursor: pointer;
+  color: #5a636c;
+  transition: all .4s;
+  font-size: 14px;
+}
+.chat-list-conversation.active{
+  background-color: #4eac6d;
+  color: white
+}
+.span-conversation {
+  background-color: #06d6a0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  position: absolute;
+  right: 0;
+  left: 0;
+  bottom: 0;
+}

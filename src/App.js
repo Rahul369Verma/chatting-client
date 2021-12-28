@@ -9,7 +9,7 @@ import Error from "./components/Error"
 
 import './App.css'
 import { Provider } from './context';
-import { SearchProvider } from './context/searchItem';
+import { NavigatorProvider } from './context/Navigator';
 import { SocketProvider } from './context/socket'
 
 
@@ -18,9 +18,9 @@ const App = () => {
 
   return (
     <Provider>
-      <SearchProvider>
+      <NavigatorProvider>
         <SocketProvider>
-          <BrowserRouter>
+          <BrowserRouter style={{position: ""}}>
             <Navigator />
             <Switch> {/* by switch we can handle err page */}
               <Route exact path='/'><Home /></Route>
@@ -32,7 +32,7 @@ const App = () => {
             </Switch>
           </BrowserRouter>
         </SocketProvider>
-      </SearchProvider>
+      </NavigatorProvider>
     </Provider>
   )
 }

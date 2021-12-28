@@ -1,12 +1,13 @@
 import { useState, useContext, useEffect } from "react";
 import { Card } from "react-bootstrap";
 import axios from "axios";
-import { Context } from '../context';
+import "./Friend.css"
+import { Context } from '../../context';
 
 
 
 
-const Friends = ({ data, index, setMessageByFriend, clicked }) => {
+const Friend = ({ friend, index, setMessageByFriend, clicked, search }) => {
 
   // const [color, setColor] = useState("light")
   const [user, setUser] = useState(false)
@@ -14,13 +15,13 @@ const Friends = ({ data, index, setMessageByFriend, clicked }) => {
 
 
 
-  const styleObj = {
-    width: '29rem',
-    cursor: "pointer",
-    "&:hover": {
-      background: "blue"
-    },
-  }
+  // const styleObj = {
+  //   width: '29rem',
+  //   cursor: "pointer",
+  //   "&:hover": {
+  //     background: "blue"
+  //   },
+  // }
 
   // const changeBlue = (e) => {
   // setColor("primary")
@@ -45,7 +46,7 @@ const Friends = ({ data, index, setMessageByFriend, clicked }) => {
 
   useEffect(() => {
     const getDataByFriendId = async () => {
-      const friendEmail = data.members.find((i) => { return (i !== state.email) })
+      const friendEmail = friend.members.find((i) => { return (i !== state.email) })
       // console.log(friendEmail)
       try {
         const response = await axios.post(process.env.REACT_APP_API_URL + "/emailData",
@@ -55,14 +56,42 @@ const Friends = ({ data, index, setMessageByFriend, clicked }) => {
         console.log(error)
       }
     }
-    getDataByFriendId()
-    return () => { setUser(false) }
-  }, [data, state])
+    if (search === "") {
+      getDataByFriendId()
+    }
+    return () => {}
+  }, [friend, state, search])
+
+  useEffect(() => {
+    if (search !== "" && user) {
+      let name = user.name.toLowerCase()
+      let find = search.toLowerCase()
+      if (name.includes(find)) {
+      } else {
+        setUser(false)
+      }
+    }
+  }, [search, user])
 
 
   return (
     <div>
-      {user ? <Card
+      {user ? <li key={index} onClick={(e) => { setMessageByFriend(friend, user) }}>
+        <div className={"px-4 chat-list-conversation " + (clicked._id === friend._id ? "active" : "")} href="/dashboard">
+          <div className="d-flex align-items-center">
+            <div className="chat-user-img align-self-center me-2">
+              <div className="avatar-conversation align-self-center">
+                <span className="avatar-title rounded-circle bg-secondary">{user.name?.slice(0, 1)}
+                </span>
+              </div>
+            </div>
+            <div className="overflow-hidden">
+              <h6 className="text-truncate mb-0">{user.name}</h6>
+            </div>
+          </div>
+        </div>
+      </li> : <div></div>}
+      {/* {user ? <Card
         bg={clicked === data ? "primary" : "light"}
         key={index}
         text={clicked === data ? "light" : "dark"}
@@ -76,10 +105,10 @@ const Friends = ({ data, index, setMessageByFriend, clicked }) => {
           <Card.Title>{user.name}</Card.Title>
           <Card.Text>{user.email}</Card.Text>
         </Card.Body>
-      </Card> : <div>Loading</div>}
+      </Card> : <div>Loading</div>} */}
     </div>
   )
 }
 
 
-export default Friends
+export default Friend

@@ -13,7 +13,7 @@ const Login = () => {
   const [password, setPassword] = useState("")
   const [errMess, setErrMess] = useState("")
   const history = useHistory()
-	const axiosInstance = axios.create({baseURL: process.env.REACT_APP_API_URL})
+  const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
 
 
 
@@ -34,7 +34,7 @@ const Login = () => {
       password,
     }
     try {
-      
+
       const response = await axiosInstance.post('login', login, {
         withCredentials: true
       })
@@ -52,38 +52,40 @@ const Login = () => {
       console.log(error.response);
     }
   }
-  
+
   if (Auth.getAuth()) {
     history.push("/chatting")
   }
 
   return (
-    <div className="outer">
-      <form className="inner" onSubmit={formSubmit}>
+    <div className="whole">
+      <div className="">
+        <form className="inner" onSubmit={formSubmit}>
 
-        <h3>Log in</h3>
-        <p style={{ marginRight: '30px' }}>{errMess}</p>
-        <div className="form-group">
-          <label>Email</label>
-          <input type="email" value={email} onChange={getEmail}
-            className="form-control" placeholder="Enter email" />
-        </div>
-
-        <div className="form-group">
-          <label>Password</label>
-          <input type="password" value={password} onChange={getPassword}
-            className="form-control" placeholder="Enter password" />
-        </div>
-
-        <div className="form-group">
-          <div className="custom-control custom-checkbox">
-            <input type="checkbox" className="custom-control-input" id="customCheck1" />
-            <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
+          <h3>Log in</h3>
+          <p style={{ marginRight: '30px' }}>{errMess}</p>
+          <div className="form-group">
+            <label>Email</label>
+            <input type="email" value={email} onChange={getEmail}
+              className="form-control" placeholder="Enter email" />
           </div>
-        </div>
 
-        <button type="submit" className="btn btn-dark btn-lg btn-block">Login</button>
-      </form>
+          <div className="form-group">
+            <label>Password</label>
+            <input type="password" value={password} onChange={getPassword}
+              className="form-control" placeholder="Enter password" />
+          </div>
+
+          <div className="form-group">
+            <div className="custom-control custom-checkbox">
+              <input type="checkbox" className="custom-control-input" id="customCheck1" />
+              <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
+            </div>
+          </div>
+
+          <button type="submit" className="btn btn-dark btn-lg btn-block">Login</button>
+        </form>
+      </div>
     </div>
   )
 }

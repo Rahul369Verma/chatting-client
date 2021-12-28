@@ -57,12 +57,20 @@ const Provider = ({ children }) => {
                         })
                         sessionStorage.setItem("user", JSON.stringify(res.data))
                     } catch (err) {
+                        console.log("logout")
                         Auth.signOut()
+                        dispatch({
+                            type: "LOGOUT",
+                        })
                         sessionStorage.removeItem("user")
                         // window.location.replace("/logout")
                     }
                 } else {
                     Auth.signOut()
+                    console.log("logout")
+                    dispatch({
+                        type: "LOGOUT",
+                    })
                     sessionStorage.removeItem("user")
                     // window.location.replace("/logout")
                 }

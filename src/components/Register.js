@@ -13,7 +13,7 @@ const Register = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [errMess, setErrMess] = useState("")
-	const axiosInstance = axios.create({baseURL: process.env.REACT_APP_API_URL})
+  const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
 
 
 
@@ -40,7 +40,7 @@ const Register = () => {
       type: "normal"
     }
     try {
-      const response = await axiosInstance.post('register', registerData,{
+      const response = await axiosInstance.post('register', registerData, {
         withCredentials: true
       })
       console.log(response.data);
@@ -63,7 +63,7 @@ const Register = () => {
 
 
   return (
-    <div className="outer">
+    <div className="whole">
       <form className="inner" onSubmit={formSubmit}>
         <h3>Register</h3>
         <p style={{ marginRight: '30px' }}>{errMess}</p>

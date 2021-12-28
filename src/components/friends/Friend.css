@@ -1,0 +1,22 @@
+.chat-user-img {
+  position: relative;
+}
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-list-conversation {
+  display: block;
+  padding: 5px 0px;
+  cursor: pointer;
+  color: #5a636c;
+  transition: all .4s;
+  font-size: 14px;
+}
+.chat-list-conversation.active{
+  background-color: #4eac6d;
+  color: white
+}
+

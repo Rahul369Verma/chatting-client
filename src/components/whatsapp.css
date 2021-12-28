@@ -1,18 +1,69 @@
 .split {
-  height: 90%;
-  width: 50%;
-  position: absolute;
-  z-index: 1;
-  top: 10%;
-  overflow-x: hidden;
+  overflow: auto;
 }
 
 .left {
-  left: 0;
-  background-color: rgb(64, 147, 255);
+  height: 90vh;
+  display: inline-block;
+  width: 25%;
+  left: 5%;
+  position: relative;
+  /* background-image: url("http://doot-light.react.themesbrand.com/static/media/pattern-05.ffd181cd.png&quot"); */
+  background-color: white;
 }
 
 .right {
+  left: 30%;
+  position: absolute;
+  display: inline-block;
+  width: 70%;
+  background-color: #f2f2f2;
+  background-image: url("http://doot-light.react.themesbrand.com/static/media/pattern-05.ffd181cd.png");
+}
+.right.show{
+  height: 75vh;
+}
+.right.hide{
+  height: 90vh;
+}
+
+
+.message-outer{
+  width: 100%;
+}
+.topBar {
+  position: sticky;
+  left: 0;
   right: 0;
-  background-color: rgb(194, 238, 122);
+  top: 0;
+  z-index: 1;
+  background-color: hsla(0,0%,100%,.05);
+  border-bottom: 1px solid #eaeaf1;
+  -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
+}
+.avatar-conversation{
+  height: 2rem;
+  width: 2rem;
+  margin-right: rem;
+}
+.avatar-sm {
+  height: 2.4rem;
+  width: 2.4rem;
+  margin-right: 1rem;
+}
+.avatar-title {
+  align-items: center;
+  background-color: #4eac6d;
+  color: #fff;
+  display: flex;
+  font-size: larger;
+  font-weight: 500;
+  height: 100%;
+  justify-content: center;
+  width: 100%;
+}
+
+.chat-list {
+  margin: 0;
 }

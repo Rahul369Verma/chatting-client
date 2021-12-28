@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useContext, useEffect } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Context } from '../context';
 import { Card } from "react-bootstrap";
 import { format } from "timeago.js";
@@ -7,7 +7,8 @@ import { SocketContext } from "../context/socket";
 
 
 
-const Messages = ({ message, index, messageConversation }) => {
+
+const Messages = ({ setMessageConversation, message, index, messageConversationId, messageConversationLastId, setScroll }) => {
 
 
   const { state } = useContext(Context)
@@ -44,7 +45,6 @@ const Messages = ({ message, index, messageConversation }) => {
   }
 
   const showTicks = () => {
-    console.log("status",message.status)
     if (message.status === "seen") {
       return <ion-icon style={{ color: "red" }} name="done-all"></ion-icon>
     } else if (message.status === "delivered") {
@@ -63,21 +63,26 @@ const Messages = ({ message, index, messageConversation }) => {
         senderEmail: m.senderEmail
       })
     }
+    if (message.senderEmail !== state.email) {
+      if (message.status !== "seen") {
+        sendSeen(message)
+      }
+    }
+  }, [message, messageConversationId, socket, state])
+
+  useEffect(() => {
     const falseNewMessage = async (id) => {
       await axios.post(process.env.REACT_APP_API_URL + "/allSeen",
         { id: id }, { withCredentials: true })
+      setMessageConversation((prev) => ({...prev, newMessage: false}))
     }
     if (message.senderEmail !== state.email) {
-      if (message.status !== "seen") {
-        if (message.message === messageConversation.lastMessage) {
-          falseNewMessage(messageConversation._id)
-          sendSeen(message)
-        } else {
-          sendSeen(message)
-        }
+      if (message._id === messageConversationLastId) {
+        console.log(messageConversationLastId)
+        falseNewMessage(messageConversationId)
       }
     }
-  }, [message, messageConversation, socket, state])
+  }, [message, messageConversationId, messageConversationLastId, state, setMessageConversation])
 
 
   return (
@@ -88,7 +93,7 @@ const Messages = ({ message, index, messageConversation }) => {
     //   >{message.message}</li>
     // </div>
     <li style={message.senderEmail === state.email ? senderStyle : receiverStyle}>
-      <div style={{ position: "relative" }}>
+      <div ref={(el) => { message._id === messageConversationLastId && setScroll(el) }} style={{ position: "relative" }}>
         <div style={message.senderEmail === state.email ? senderInner : receiverInner}>
           <Card
             // bg={message.senderEmail === state.email ? "" : "light"}

@@ -89,7 +89,10 @@ const Chatting = () => {
 		const seen = async (arrivalMessage) => {
 			await axios.post(process.env.REACT_APP_API_URL + "/seen",
 				{ id: arrivalMessage._id }, { withCredentials: true })
+			setMessageData(prev => [...prev, arrivalMessage])
+			setMessageConversation((prev) => ({ ...prev, lastMessageId: arrivalMessage._id, lastMessage: arrivalMessage.message }))
 			socket.current.emit("messageSeen", {
+				conversationId: arrivalMessage.conversationId,
 				senderEmail: arrivalMessage.senderEmail,
 				_id: arrivalMessage._id
 			})
@@ -98,7 +101,8 @@ const Chatting = () => {
 			await axios.post(process.env.REACT_APP_API_URL + "/deliveredById",
 				{ id: arrivalMessage._id }, { withCredentials: true })
 			socket.current.emit("messageDelivered", {
-				conversationId: false,
+				all: false,
+				conversationId: arrivalMessage.conversationId,
 				_id: arrivalMessage._id,
 				senderEmail: arrivalMessage.senderEmail
 			})
@@ -106,7 +110,7 @@ const Chatting = () => {
 		socket.current.on("welcome", message => {
 			console.log(message)
 		})
-		socket.current.on("getMessage", (data) => {
+		socket.current.on("getMessage", async (data) => {
 			console.log("message Received", data)
 			console.log(messageConversation._id)
 			if (messageConversation._id === data.conversationId) {
@@ -119,65 +123,65 @@ const Chatting = () => {
 					createdAt: Date.now()
 				}
 				console.log("hits")
-				setMessageData(prev => [...prev, arrivalMessage])
-				seen(arrivalMessage)
+				await seen(arrivalMessage)
 			} else {
 				let deliverMessage = {
 					_id: data._id,
 					senderEmail: data.senderEmail,
 				}
-				delivered(deliverMessage)
+				await delivered(deliverMessage)
 			}
 		})
-	}, [messageConversation])
+	}, [messageConversation._id])
 
 
 	useEffect(() => {
-		socket.current.on("getMessageSeen", ({ _id }) => {
+		socket.current.on("getMessageSeen", ({ _id, conversationId }) => {
 			console.log("message Seen", _id)
-			setMessageData((prev) => {
-				return prev.map(message => {
-					if (message._id === _id) {
-						return {
-							...message,
-							status: "seen"
-						}
-					}
-					return message
-				})
-			})
-		})
-		const getMessages = async () => {
-			try {
-				const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
-					{ conversationId: messageConversation._id }, { withCredentials: true })
-				// setMessageData(response.data)
-			} catch (error) {
-				console.log(error)
-			}
-		}
-		socket.current.on("getMessageDelivered", ({ _id, conversationId }) => {
-			console.log("message delivered")
-			if (conversationId) {
-				getMessages()
-			} else {
+			if (messageConversation._id === conversationId) {
 				setMessageData((prev) => {
 					return prev.map(message => {
 						if (message._id === _id) {
 							return {
 								...message,
-								status: "delivered"
+								status: "seen"
 							}
 						}
 						return message
 					})
-				}
-				)
+				})
 			}
 		})
-	}, [messageConversation, socket])
-
-	console.log(messageConversation._id)
+		const getMessages = async () => {
+			try {
+				const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
+					{ conversationId: messageConversation._id }, { withCredentials: true })
+				setMessageData(response.data)
+			} catch (error) {
+				console.log(error)
+			}
+		}
+		socket.current.on("getMessageDelivered", ({ _id, conversationId, all }) => {
+			console.log("message delivered")
+			if (all) {
+				getMessages()
+			} else {
+				if (messageConversation._id === conversationId) {
+					setMessageData((prev) => {
+						return prev.map(message => {
+							if (message._id === _id) {
+								return {
+									...message,
+									status: "delivered"
+								}
+							}
+							return message
+						})
+					})
+				}
+			}
+		})
+	}, [messageConversation._id, socket])
 
 	useEffect(() => {
 		const getMessages = async () => {
@@ -232,6 +236,8 @@ const Chatting = () => {
 		}
 	}
 
+	console.log(messageConversation)
+
 
 
 	if (Auth.getAuth()) {
@@ -272,22 +278,21 @@ const Chatting = () => {
 
 				</div >
 				<div className={"split right " + (!messageFriend && !messageConversation ? "hide" : "show")} id="wrapper">
-					{(friendData) ? <TopBar friendData={friendData} activeUsers={activeUsers} messageConver={messageConversation} /> : <></>}
+					{(friendData) ? <TopBar friendData={friendData} activeUsers={activeUsers} messageConverId={messageConversation._id} /> : <></>}
 
 					<div className="message-outer">
 						<ul className="force-overflow scrollbar" id="message-scroll">
 							{
-								messageData.map((m, i) => (
-									< Messages message={m} key={i} index={i} messageConversation={messageConversation} />
+								messageConversation && messageData.map((m, i) => (
+									< Messages setMessageConversation={setMessageConversation} setScroll={setScroll} message={m} key={i} index={i} messageConversationId={messageConversation._id} messageConversationLastId={messageConversation.lastMessageId} />
 								))
 							}
-							<div ref={(el) => { setScroll(el) }}></div>
 						</ul>
 					</div>
 
 				</div>
 				{(messageFriend || messageConversation) ?
-					<SendInput MessageConversation={MessageConversation} messageConversation={messageConversation} friendData={friendData} messageFriend={messageFriend} setMessageData={setMessageData} />
+					<SendInput setMessageConversation={setMessageConversation} MessageConversation={MessageConversation} messageConversationId={messageConversation._id} friendData={friendData} messageFriend={messageFriend} setMessageData={setMessageData} />
 					: <></>
 				}
 			</div >

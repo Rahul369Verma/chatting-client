@@ -45,7 +45,7 @@ const Chat = ({ messageConversation, MessageConversation, activeUsers }) => {
   useEffect(() => {
     socket?.socket?.current.on("getMessage", (data) => {
       console.log("message Received")
-      if ((messageConversation) && (messageConversation?._id !== data.conversationId)) {
+      if (messageConversation?._id !== data.conversationId) {
         getUser()
       }
     })
@@ -56,7 +56,7 @@ const Chat = ({ messageConversation, MessageConversation, activeUsers }) => {
         { id: c._id }, { withCredentials: true })
       if (response.data.n !== 0) {
         socket?.socket?.current.emit("messageDelivered", {
-          conversationId: c._id,
+          all: true,
           _id: false,
           senderEmail: c.senderEmail
         })

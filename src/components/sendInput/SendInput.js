@@ -10,7 +10,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 
 
-const SendInput = ({ MessageConversation, messageConversation, friendData, messageFriend, setMessageData }) => {
+const SendInput = ({ setMessageConversation , MessageConversation, messageConversationId, friendData, messageFriend, setMessageData }) => {
 
   const { socket } = useContext(SocketContext)
   const [inputData, setInputData] = useState("")
@@ -24,7 +24,7 @@ const SendInput = ({ MessageConversation, messageConversation, friendData, messa
   const sendMessage = async (e) => {
     e.preventDefault()
     const messageForm = {
-      conversationId: messageConversation._id,
+      conversationId: messageConversationId,
       friendId: messageFriend._id,
       senderEmail: state.email,
       message: inputData
@@ -33,12 +33,13 @@ const SendInput = ({ MessageConversation, messageConversation, friendData, messa
     try {
       const response = await axiosInstance.post("messagePost", messageForm, { withCredentials: true })
       setInputData("")
+      setMessageConversation((prev) => ({...prev, lastMessageId: response.data.messageSaved._id, lastMessage: messageForm.message}))
       setMessageData(prev => [...prev, response.data.messageSaved])
-      if (messageConversation) {
+      if (messageConversationId) {
         console.log("Message send successfully", response.data)
         socket.socket.current.emit("sendMessage", {
           _id: response.data.messageSaved._id,
-          conversationId: messageConversation._id,
+          conversationId: messageConversationId,
           senderEmail: state.email,
           text: inputData,
           receiverEmail: friendData.email
@@ -66,9 +67,9 @@ const SendInput = ({ MessageConversation, messageConversation, friendData, messa
 
   const changeInput = (e) => {
     setInputData(e.target.value);
-    if (messageConversation) {
+    if (messageConversationId) {
       if (friendData) {
-        socket.socket.current.emit("typing", { messageConversation: messageConversation, friendData: friendData })
+        socket.socket.current.emit("typing", { messageConversationId: messageConversationId, friendData: friendData })
       }
     }
   }

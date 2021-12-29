@@ -44,16 +44,6 @@ const Messages = ({ setMessageConversation, message, index, messageConversationI
     maxWidth: "400px"
   }
 
-  const showTicks = () => {
-    if (message.status === "seen") {
-      return <ion-icon style={{ color: "red" }} name="done-all"></ion-icon>
-    } else if (message.status === "delivered") {
-      return <ion-icon name="done-all"></ion-icon>
-    } else {
-      return <ion-icon name="checkmark"></ion-icon>
-    }
-  }
-
   useEffect(() => {
     const sendSeen = async (m) => {
       await axios.post(process.env.REACT_APP_API_URL + "/seen",
@@ -88,14 +78,8 @@ const Messages = ({ setMessageConversation, message, index, messageConversationI
 
 
   return (
-    // <div>
-    //   <li
-    //     style={message.senderEmail === state.email ? senderStyle : receiverStyle}
-
-    //   >{message.message}</li>
-    // </div>
-    <li style={message.senderEmail === state.email ? senderStyle : receiverStyle}>
-      <div ref={(el) => { message._id === messageConversationLastId && setScroll(el) }} style={{ position: "relative" }}>
+    <li ref={(el) => { message._id === messageConversationLastId && setScroll(el) }} style={message.senderEmail === state.email ? senderStyle : receiverStyle}>
+      <div style={{ position: "relative" }}>
         <div style={message.senderEmail === state.email ? senderInner : receiverInner}>
           <Card
             // bg={message.senderEmail === state.email ? "" : "light"}
@@ -114,7 +98,13 @@ const Messages = ({ setMessageConversation, message, index, messageConversationI
             className="text-muted">
             {format(message.createdAt)}
           </small>
-          {message.senderEmail === state.email && showTicks()}
+          {message.senderEmail === state.email && (
+            <div>
+              {(message.status === "seen") && (<><ion-icon style={{ color: "red" }} name="done-all"></ion-icon></>)}
+              {(message.status === "delivered") && (<><ion-icon name="done-all"></ion-icon></>)}
+              {(message.status === "send") && (<><ion-icon name="checkmark"></ion-icon></>)}
+            </div>
+          )}
         </div>
       </div>
     </li>

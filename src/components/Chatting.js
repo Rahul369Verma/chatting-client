@@ -7,16 +7,15 @@ import Messages from "./Messages";
 import Conversation from "./conversation/Conversation";
 import Others from "./others/Others";
 import Friends from "./friends/Friends";
-import { Modal } from "react-bootstrap";
 import Auth from '../isAuth';
 import { io } from "socket.io-client"
 import { SocketContext } from "../context/socket";
 import { NavigatorContext } from '../context/Navigator';
-import SearchBar from "./SearchBar/SearchBar";
 import SendInput from "./sendInput/SendInput";
 import TopBar from "./TopBar/TopBar";
 import Chat from "./chat/Chat";
 import FriendRequests from "./friendRequest/FriendRequests";
+import Loader from "./loader/loader";
 
 
 
@@ -110,7 +109,7 @@ const Chatting = () => {
 		socket.current.on("welcome", message => {
 			console.log(message)
 		})
-		socket.current.on("getMessage", async (data) => {
+		socket.current.on("getMessage", (data) => {
 			console.log("message Received", data)
 			console.log(messageConversation._id)
 			if (messageConversation._id === data.conversationId) {
@@ -123,16 +122,21 @@ const Chatting = () => {
 					createdAt: Date.now()
 				}
 				console.log("hits")
-				await seen(arrivalMessage)
+				seen(arrivalMessage)
 			} else {
+				console.log("this hits")
 				let deliverMessage = {
 					_id: data._id,
 					senderEmail: data.senderEmail,
 				}
-				await delivered(deliverMessage)
+				delivered(deliverMessage)
 			}
 		})
-	}, [messageConversation._id])
+		return () => {
+      socket.current.off("welcome");
+      socket.current.off("getMessage");
+    };
+	}, [messageConversation._id, socket])
 
 
 	useEffect(() => {
@@ -181,6 +185,10 @@ const Chatting = () => {
 				}
 			}
 		})
+		return () => {
+      socket.current.off("getMessageSeen");
+      socket.current.off("getMessageDelivered");
+    };
 	}, [messageConversation._id, socket])
 
 	useEffect(() => {
@@ -188,17 +196,18 @@ const Chatting = () => {
 			try {
 				const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
 					{ conversationId: messageConversation._id }, { withCredentials: true })
+					console.log("get messages")
 				setMessageData(response.data)
 			} catch (error) {
 				console.log(error)
 			}
 		}
-		if (messageConversation) {
+		if (messageConversation._id) {
 			getMessages()
 		} else {
 			setMessageData([])
 		}
-	}, [messageConversation])
+	}, [messageConversation._id])
 
 	const MessageConversation = (conversation, friendData) => {
 		sessionStorage.setItem("messageConversation", JSON.stringify(conversation));
@@ -236,7 +245,6 @@ const Chatting = () => {
 		}
 	}
 
-	console.log(messageConversation)
 
 
 
@@ -300,7 +308,7 @@ const Chatting = () => {
 	} else if (Auth.getAuth() === false) {
 		return (
 			<div>
-				{state.email === null && <h1>Loading</h1>}
+				{state.email === null && <Loader />}
 				{state.email === false && <h3>
 					You need To login First
 				</h3 >}
@@ -310,7 +318,7 @@ const Chatting = () => {
 
 	return (
 		<div>
-			{state.email === null && <h1>Loading</h1>}
+			{state.email === null && <Loader />}
 			{state.email === false && <h1>First you have to Login/Register</h1>}
 		</div>
 	)

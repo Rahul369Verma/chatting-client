@@ -75,7 +75,7 @@ const Conversation = ({ conversation, index, setMessageByConversation, messageCo
               <h6 className="text-truncate mb-0">{friendData.name}</h6>
             </div>
             <div className="ms-auto">
-              {conversation.newMessage && (conversation.senderEmail !== state.email) && <span className="badge badge-soft-dark rounded p-1"><ion-icon name="radio-button-on"></ion-icon></span>}
+              {conversation.newMessage && (conversation.senderEmail !== state.email) && (conversation._id !== messageConversation._id) && <span className="badge badge-soft-dark rounded p-1"><ion-icon name="radio-button-on"></ion-icon></span>}
             </div>
           </div>
         </div>

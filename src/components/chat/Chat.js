@@ -43,12 +43,19 @@ const Chat = ({ messageConversation, MessageConversation, activeUsers }) => {
   }, [])
 
   useEffect(() => {
+    getUser()
+  }, [messageConversation.newMessage])
+
+  useEffect(() => {
     socket?.socket?.current.on("getMessage", (data) => {
       console.log("message Received")
       if (messageConversation?._id !== data.conversationId) {
         getUser()
       }
     })
+    return () => {
+      socket.socket.current.off("getMessage");
+    };
   }, [socket.socket, messageConversation])
   useEffect(() => {
     const sendDelivered = async (c) => {

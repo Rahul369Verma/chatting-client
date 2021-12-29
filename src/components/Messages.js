@@ -13,6 +13,7 @@ const Messages = ({ setMessageConversation, message, index, messageConversationI
 
   const { state } = useContext(Context)
   const { socket } = useContext(SocketContext)
+  // const [status, setStatus] = useState("send")
 
 
 
@@ -44,11 +45,21 @@ const Messages = ({ setMessageConversation, message, index, messageConversationI
     maxWidth: "400px"
   }
 
+  // useEffect(() => {
+  //   if(message.status === "seen"){
+  //     setStatus("seen")
+  //   }else if(message.status === "delivered"){
+  //     setStatus("delivered")
+  //   }
+  // }, [message.status])
+
+
   useEffect(() => {
     const sendSeen = async (m) => {
       await axios.post(process.env.REACT_APP_API_URL + "/seen",
         { id: m._id }, { withCredentials: true })
       socket?.socket?.current.emit("messageSeen", {
+        conversationId: message.conversationId,
         _id: m._id,
         senderEmail: m.senderEmail
       })
@@ -78,7 +89,7 @@ const Messages = ({ setMessageConversation, message, index, messageConversationI
 
 
   return (
-    <li ref={(el) => { message._id === messageConversationLastId && setScroll(el) }} style={message.senderEmail === state.email ? senderStyle : receiverStyle}>
+    <li style={message.senderEmail === state.email ? senderStyle : receiverStyle}>
       <div style={{ position: "relative" }}>
         <div style={message.senderEmail === state.email ? senderInner : receiverInner}>
           <Card

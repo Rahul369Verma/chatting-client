@@ -6,7 +6,7 @@ import Conversation from '../conversation/Conversation'
 import { SocketContext } from "../../context/socket";
 import SearchBar from '../SearchBar/SearchBar';
 
-const Chat = ({ messageConversation, MessageConversation, activeUsers }) => {
+const Chat = ({ getMessage, setGetMessage, messageConversation, MessageConversation, activeUsers }) => {
 
   const { state } = useContext(Context)
   const [input, setInput] = useState("")
@@ -47,16 +47,14 @@ const Chat = ({ messageConversation, MessageConversation, activeUsers }) => {
   }, [messageConversation.newMessage])
 
   useEffect(() => {
-    socket?.socket?.current.on("getMessage", (data) => {
+    if (getMessage) {
       console.log("message Received")
-      if (messageConversation?._id !== data.conversationId) {
+      if (messageConversation?._id !== getMessage.conversationId) {
         getUser()
       }
-    })
-    return () => {
-      socket.socket.current.off("getMessage");
-    };
-  }, [socket.socket, messageConversation])
+      setGetMessage(false)
+    }
+  }, [getMessage, messageConversation, setGetMessage])
   useEffect(() => {
     const sendDelivered = async (c) => {
       const response = await axios.post(process.env.REACT_APP_API_URL + "/deliveredByConversationId",

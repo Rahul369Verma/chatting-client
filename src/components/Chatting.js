@@ -25,6 +25,7 @@ const Chatting = () => {
 	const { state } = useContext(Context)
 	const { navigator, navigatorDispatch } = useContext(NavigatorContext)
 	const [scroll, setScroll] = useState("")
+	const [getMessage, setGetMessage] = useState(false)
 	const [friendData, setFriendData] = useState(JSON.parse(sessionStorage.getItem("friendData")) || false)
 	const [messageConversation, setMessageConversation] = useState(false)
 	const [messageFriend, setMessageFriend] = useState(false)
@@ -62,12 +63,6 @@ const Chatting = () => {
 
 	}, [socketDispatch]) //to run single time only
 
-	// useEffect(() => {
-	// 	if (arrivalMessage) {
-	// 		console.log(arrivalMessage)
-
-	// 	}
-	// }, [arrivalMessage, messageConversation])
 
 	useEffect(() => {
 		if (state.email) {
@@ -110,6 +105,7 @@ const Chatting = () => {
 			console.log(message)
 		})
 		socket.current.on("getMessage", (data) => {
+			setGetMessage(data)
 			console.log("message Received", data)
 			console.log(messageConversation._id)
 			if (messageConversation._id === data.conversationId) {
@@ -126,6 +122,7 @@ const Chatting = () => {
 			} else {
 				console.log("this hits")
 				let deliverMessage = {
+					conversationId: data.conversationId,
 					_id: data._id,
 					senderEmail: data.senderEmail,
 				}
@@ -133,29 +130,13 @@ const Chatting = () => {
 			}
 		})
 		return () => {
-      socket.current.off("welcome");
-      socket.current.off("getMessage");
-    };
+			socket.current.off("welcome");
+			socket.current.off("getMessage");
+		};
 	}, [messageConversation._id, socket])
 
 
 	useEffect(() => {
-		socket.current.on("getMessageSeen", ({ _id, conversationId }) => {
-			console.log("message Seen", _id)
-			if (messageConversation._id === conversationId) {
-				setMessageData((prev) => {
-					return prev.map(message => {
-						if (message._id === _id) {
-							return {
-								...message,
-								status: "seen"
-							}
-						}
-						return message
-					})
-				})
-			}
-		})
 		const getMessages = async () => {
 			try {
 				const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
@@ -165,30 +146,44 @@ const Chatting = () => {
 				console.log(error)
 			}
 		}
-		socket.current.on("getMessageDelivered", ({ _id, conversationId, all }) => {
-			console.log("message delivered")
-			if (all) {
+		socket.current.on("getMessageSeen", ({ _id, conversationId }) => {
+			console.log("message Seen", _id)
+			if (messageConversation._id === conversationId) {
 				getMessages()
-			} else {
-				if (messageConversation._id === conversationId) {
-					setMessageData((prev) => {
-						return prev.map(message => {
-							if (message._id === _id) {
-								return {
-									...message,
-									status: "delivered"
-								}
-							}
-							return message
-						})
-					})
-				}
+				// setMessageData((prev) => {
+				// 	return prev.map(message => {
+				// 		if (message._id === _id) {
+				// 			return {
+				// 				...message,
+				// 				status: "seen"
+				// 			}
+				// 		}
+				// 		return message
+				// 	})
+				// })
+			}
+		})
+		socket.current.on("getMessageDelivered", ({ _id, conversationId, all }) => {
+			console.log("message delivered", messageConversation, conversationId)
+			if (messageConversation._id === conversationId) {
+				getMessages()
+				// setMessageData((prev) => {
+				// 	return prev.map(message => {
+				// 		if (message._id === _id) {
+				// 			return {
+				// 				...message,
+				// 				status: "delivered"
+				// 			}
+				// 		}
+				// 		return message
+				// 	})
+				// })
 			}
 		})
 		return () => {
-      socket.current.off("getMessageSeen");
-      socket.current.off("getMessageDelivered");
-    };
+			socket.current.off("getMessageSeen");
+			socket.current.off("getMessageDelivered");
+		};
 	}, [messageConversation._id, socket])
 
 	useEffect(() => {
@@ -196,7 +191,7 @@ const Chatting = () => {
 			try {
 				const response = await axios.post(process.env.REACT_APP_API_URL + "/messageGet",
 					{ conversationId: messageConversation._id }, { withCredentials: true })
-					console.log("get messages")
+				console.log("get messages")
 				setMessageData(response.data)
 			} catch (error) {
 				console.log(error)
@@ -253,7 +248,7 @@ const Chatting = () => {
 			<div style={{ position: "relative" }}>
 				<div className="split left">
 					{navigator.selected === "chat" && <div>
-						<Chat messageConversation={messageConversation} MessageConversation={MessageConversation} activeUsers={activeUsers} />
+						<Chat getMessage={getMessage} setGetMessage={setGetMessage} messageConversation={messageConversation} MessageConversation={MessageConversation} activeUsers={activeUsers} />
 					</div>}
 					{navigator.selected === "friends" && <div>
 						<Friends MessageFriend={MessageFriend} />
@@ -290,11 +285,14 @@ const Chatting = () => {
 
 					<div className="message-outer">
 						<ul className="force-overflow scrollbar" id="message-scroll">
-							{
-								messageConversation && messageData.map((m, i) => (
-									< Messages messageConversationNewMessage={messageConversation.newMessage} setMessageConversation={setMessageConversation} setScroll={setScroll} message={m} key={i} index={i} messageConversationId={messageConversation._id} messageConversationLastId={messageConversation.lastMessageId} />
-								))
-							}
+							<div>
+								{
+									messageConversation && messageData.map((m, i) => (
+										< Messages messageConversationNewMessage={messageConversation.newMessage} setMessageConversation={setMessageConversation} message={m} key={i} index={i} messageConversationId={messageConversation._id} messageConversationLastId={messageConversation.lastMessageId} />
+									))
+								}
+							</div>
+							<li ref={(el) => { setScroll(el) }} style={{ position: "relative", display: "flex" }}></li>
 						</ul>
 					</div>
 

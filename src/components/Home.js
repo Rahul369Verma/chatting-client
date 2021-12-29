@@ -1,6 +1,7 @@
 import {useContext} from "react"
 import Auth from '../isAuth';
 import { Context } from '../context';
+import Loader from "./loader/loader";
 
 
 
@@ -20,7 +21,7 @@ const Home = () => {
   } else if (state.email === null) {
     return (
       <div>
-        <h1>Loading</h1>
+        <Loader />
       </div>
     )
   }

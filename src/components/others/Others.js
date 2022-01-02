@@ -28,6 +28,11 @@ const Others = () => {
     return() => {setOthers(false)}
   }, [input])
 
+  const RemoveNotification = (data) => {
+    const newOthers = others.filter((e) => e !== data)
+    setOthers(newOthers)
+  }
+
   console.log(others)
   return (
     <div>
@@ -37,10 +42,15 @@ const Others = () => {
         <h3 className="px-4 pb-2">Others</h3>
         <ul className="list-unstyled m-0 chat-user-list">
           {(others?.map((item, i) => {
-            if (item.email === state.email) {
+            if (item.email === state.email || friends.includes(item)) {
               return null
             }
-            return <Other other={item} key={i} index={i} />
+            for (let i = 0; i < friends.length; i++) {
+              if(friends[i].allFriends.email === item.email){
+                return null
+              }              
+            }
+            return <Other other={item} key={i} index={i} RemoveNotification={RemoveNotification} />
           }))}
         </ul>
       </div>)

@@ -217,7 +217,7 @@ const Chatting = () => {
 		} else {
 			setMessageData([])
 		}
-	}, [messageConversation])
+	}, [messageConversation?._id])
 
 	// const MessageConversation = async (conversation, friendData) => {
 	// 	const response = await axios.post(process.env.REACT_APP_API_URL + "/isFriend?email=" + friendData.email

@@ -9,7 +9,7 @@ import { SocketContext } from "../../context/socket";
 
 
 
-const Other = ({ other, index }) => {
+const Other = ({ other, index, RemoveNotification }) => {
 
   const { state } = useContext(Context)
   const { socket } = useContext(SocketContext)
@@ -25,35 +25,27 @@ const Other = ({ other, index }) => {
   
 
   const acceptRequest = async () => {
-    let data = {
-      senderEmail: other.email,
-      receiverEmail: state.email
-    }
     const response = await axiosInstance.post("acceptFriendRequest",
-      { data: data }, { withCredentials: true })
+      { data: requestReceived }, { withCredentials: true })
     console.log(response.data)
-    let email = data.senderEmail
+    let email = other.email
     socket.socket?.current.emit("notification", { email })
+    RemoveNotification(other)
   }
   const removeRequest = async () => {
-    let data = {
-      senderEmail: other.email,
-      receiverEmail: state.email
-    }
     const response = await axiosInstance.post("removeFriendRequest",
-      { data: data }, { withCredentials: true })
+      { data: requestReceived }, { withCredentials: true })
     console.log("notification removed", response.data)
     console.log(socket)
-    if (socket !== null) {
-      let email = data.senderEmail
-      socket.socket?.current.emit("notification", { email })
-    }
+    let email = other.email
+    socket.socket?.current.emit("notification", { email })
+    RemoveNotification(other)
   }
 
   const sendRequest = async () => {
     try {
       setCheckRequest(true)
-      const response = await axiosInstance.post("sendFriendRequest",
+      await axiosInstance.post("sendFriendRequest",
         { senderEmail: state.email, receiverEmail: other.email }, { withCredentials: true })
       let email = other.email
       socket.socket?.current.emit("notification", { email })
@@ -76,7 +68,8 @@ const Other = ({ other, index }) => {
         if(response.data.senderEmail === state.email){
           setCheckRequest(true)
         }else if(response.data.senderEmail === other.email){
-          setRequestReceived(true)          
+          console.log(response.data)
+          setRequestReceived(response.data)          
         }else{
           setCheckRequest(false)
           setRequestReceived(false) 
@@ -109,10 +102,10 @@ const Other = ({ other, index }) => {
       </div>
       {(!checkRequest && requestReceived) && <div className="d-flex">
       <div className="mx-auto">
-        <Button className="my-auto mx-auto">Accept</Button>
+        <Button className="my-auto mx-auto" onClick={acceptRequest}>Accept</Button>
       </div>
       <div className="mx-auto">
-        <Button className="my-auto mx-auto">Reject</Button>
+        <Button className="my-auto mx-auto" onClick={removeRequest}>Reject</Button>
       </div>
     </div>}
     </li>

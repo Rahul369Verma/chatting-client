@@ -51,6 +51,8 @@ const SendInput = ({ setMessageConversation, messageConversationId, friendData, 
           receiverEmail: friendData.email
         })
       } else {
+        setMessageConversation(response.data.conversationSaved)
+        sessionStorage.setItem("messageConversation", JSON.stringify(response.data.conversationSaved));
         console.log("Message send successfully", response.data)
         socket.socket.current.emit("sendMessage", {
           _id: response.data.messageSaved._id,

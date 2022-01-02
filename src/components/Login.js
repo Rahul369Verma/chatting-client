@@ -67,13 +67,13 @@ const Login = () => {
           <div className="form-group">
             <label>Email</label>
             <input type="email" value={email} onChange={getEmail}
-              className="form-control" placeholder="Enter email" />
+              className="form-control" placeholder="Enter email" autoComplete="on" />
           </div>
 
           <div className="form-group">
             <label>Password</label>
             <input type="password" value={password} onChange={getPassword}
-              className="form-control" placeholder="Enter password" />
+              className="form-control" placeholder="Enter password" autoComplete="on" />
           </div>
 
           <div className="form-group">

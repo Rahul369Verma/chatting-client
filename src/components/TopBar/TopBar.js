@@ -3,18 +3,18 @@ import { SocketContext } from "../../context/socket";
 import "./TopBar.css"
 
 
-const TopBar = ({ friendData, activeUsers, messageConverId }) => {
+const TopBar = ({ friendData, activeUsers, messageConversation }) => {
   const [print, setPrint] = useState("Active")
   const { socket } = useContext(SocketContext)
 
   useEffect(() => {
-    socket.socket.current.on("typing", ({ messageConversationId }) => {
-      if (messageConverId === messageConversationId) {
+    socket.socket?.current.on("typing", ({ messageConversationId }) => {
+      if (messageConversation?._id === messageConversationId) {
         setPrint("Typing")
         setTimeout(setPrint, 3000, "Active")
       }
     })
-  }, [socket, messageConverId])
+  }, [socket, messageConversation])
 
   return (
     <div className="p-2 topBar">

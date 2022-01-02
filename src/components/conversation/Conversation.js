@@ -6,37 +6,30 @@ import "./Conversation.css"
 import axios from "axios";
 
 
-const Conversation = ({ conversation, index, setMessageByConversation, messageConversation, active, search }) => {
+const Conversation = ({ conversation, index, setMessageByFriend, messageConversation, active }) => {
 
-  const styleObj = {
-    display: "block",
-    cursor: "pointer",
-    position: "relative"
-  }
+  // const styleObj = {
+  //   display: "block",
+  //   cursor: "pointer",
+  //   position: "relative"
+  // }
 
   const { state } = useContext(Context)
-  const { socket } = useContext(SocketContext)
-  const [print, setPrint] = useState("Active Now")
+  // const { socket } = useContext(SocketContext)
+  // const [print, setPrint] = useState("Active Now")
   const [friendData, setFriendData] = useState(false)
   const [activeStatus, setActiveStatus] = useState(false)
 
 
 
   useEffect(() => {
-    const friendCollId = {
-      friendCollectionId: conversation.friendCollectionId
-    }
     const getUser = async () => {
-      const res = await axios.post(process.env.REACT_APP_API_URL + "/friendId", friendCollId, { withCredentials: true })
-      const friendEmail = await res.data.members.find((e) => e !== state.email)
-      const response = await axios.post(process.env.REACT_APP_API_URL + "/emailData", { email: friendEmail }, { withCredentials: true })
-      setFriendData(response.data)
+      const friend = await conversation.members.find((e) => e.email !== state.email)
+      setFriendData(friend)
     }
-    if (search === "") {
-      getUser()
-    }
-    return () => {}
-  }, [conversation.friendCollectionId, state, search])
+    getUser()
+    return () => { }
+  }, [conversation, state])
 
   useEffect(() => {
     if (active.some(u => u.userEmail === friendData.email)) {
@@ -46,22 +39,22 @@ const Conversation = ({ conversation, index, setMessageByConversation, messageCo
     }
   }, [active, friendData])
 
-  useEffect(() => {
-    if (search !== "" && friendData) {
-      let name = friendData.name.toLowerCase()
-      let find = search.toLowerCase()
-      if (name.includes(find)) {
-      } else {
-        setFriendData(false)
-      }
-    }
-  }, [search, friendData])
+  // useEffect(() => {
+  //   if (search !== "" && friendData) {
+  //     let name = friendData.name.toLowerCase()
+  //     let find = search.toLowerCase()
+  //     if (name.includes(find)) {
+  //     } else {
+  //       setFriendData(false)
+  //     }
+  //   }
+  // }, [search, friendData])
 
 
   return (
     <div>
-      {friendData ? <li key={index} onClick={(e) => { setMessageByConversation(conversation, friendData) }}>
-        <div className={"px-4 chat-list-conversation " + (messageConversation._id === conversation._id ? "active" : "")} href="/dashboard">
+      {friendData ? <li key={index} onClick={(e) => { setMessageByFriend(friendData) }}>
+        <div className={"px-4 chat-list-conversation " + (messageConversation?._id === conversation._id ? "active" : "")}>
           <div className="d-flex align-items-center">
             <div className="chat-user-img align-self-center me-2">
               <div className="avatar-conversation align-self-center">
@@ -75,7 +68,9 @@ const Conversation = ({ conversation, index, setMessageByConversation, messageCo
               <h6 className="text-truncate mb-0">{friendData.name}</h6>
             </div>
             <div className="ms-auto">
-              {conversation.newMessage && (conversation.senderEmail !== state.email) && (conversation._id !== messageConversation._id) && <span className="badge badge-soft-dark rounded p-1"><ion-icon name="radio-button-on"></ion-icon></span>}
+              {conversation.newMessage && (conversation.senderEmail !== state.email) &&
+                (conversation._id !== messageConversation?._id) && <span className="badge badge-soft-dark rounded p-1">
+                  <ion-icon name="radio-button-on"></ion-icon></span>}
             </div>
           </div>
         </div>

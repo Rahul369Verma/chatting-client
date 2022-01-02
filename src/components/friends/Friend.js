@@ -7,7 +7,7 @@ import { Context } from '../../context';
 
 
 
-const Friend = ({ friend, index, setMessageByFriend, clicked, search }) => {
+const Friend = ({ friend, index, setMessageByFriend }) => {
 
   // const [color, setColor] = useState("light")
   const [user, setUser] = useState(false)
@@ -44,53 +44,51 @@ const Friend = ({ friend, index, setMessageByFriend, clicked, search }) => {
   // }
 
 
-  useEffect(() => {
-    const getDataByFriendId = async () => {
-      const friendEmail = friend.members.find((i) => { return (i !== state.email) })
-      // console.log(friendEmail)
-      try {
-        const response = await axios.post(process.env.REACT_APP_API_URL + "/emailData",
-          { email: friendEmail }, { withCredentials: true })
-        setUser(response.data)
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    if (search === "") {
-      getDataByFriendId()
-    }
-    return () => {}
-  }, [friend, state, search])
+  // useEffect(() => {
+  //   const getDataByFriendId = async () => {
+  //     try {
+  //       const response = await axios.post(process.env.REACT_APP_API_URL + "/emailData",
+  //         { email: friendEmail }, { withCredentials: true })
+  //       setUser(response.data)
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  //   if (search === "") {
+  //     getDataByFriendId()
+  //   }
+  //   return () => {}
+  // }, [friend, state, search])
 
-  useEffect(() => {
-    if (search !== "" && user) {
-      let name = user.name.toLowerCase()
-      let find = search.toLowerCase()
-      if (name.includes(find)) {
-      } else {
-        setUser(false)
-      }
-    }
-  }, [search, user])
+  // useEffect(() => {
+  //   if (search !== "" && user) {
+  //     let name = user.name.toLowerCase()
+  //     let find = search.toLowerCase()
+  //     if (name.includes(find)) {
+  //     } else {
+  //       setUser(false)
+  //     }
+  //   }
+  // }, [search, user])
 
 
   return (
     <div>
-      {user ? <li key={index} onClick={(e) => { setMessageByFriend(friend, user) }}>
-        <div className={"px-4 chat-list-conversation " + (clicked._id === friend._id ? "active" : "")} href="/dashboard">
+      <li key={index} onClick={(e) => { setMessageByFriend(friend) }}>
+        <div className={"px-4 chat-list-conversation"}>
           <div className="d-flex align-items-center">
             <div className="chat-user-img align-self-center me-2">
               <div className="avatar-conversation align-self-center">
-                <span className="avatar-title rounded-circle bg-secondary">{user.name?.slice(0, 1)}
+                <span className="avatar-title rounded-circle bg-secondary">{friend.name?.slice(0, 1)}
                 </span>
               </div>
             </div>
             <div className="overflow-hidden">
-              <h6 className="text-truncate mb-0">{user.name}</h6>
+              <h6 className="text-truncate mb-0">{friend.name}</h6>
             </div>
           </div>
         </div>
-      </li> : <div></div>}
+      </li>
       {/* {user ? <Card
         bg={clicked === data ? "primary" : "light"}
         key={index}

@@ -70,18 +70,19 @@ const Other = ({ other, index }) => {
   }
 
   useEffect(() => {
-    const checkRequestSended = async () => {
+    const checkRequest = async () => {
       const response = await axios.post(process.env.REACT_APP_API_URL + "/checkFriendRequest",
-        { senderEmail: state.email, receiverEmail: other.email, type: "friendRequest" }, { withCredentials: true })
-      setCheckRequest(response.data)
+        { firstEmail: state.email, secondEmail: other.email, type: "friendRequest" }, { withCredentials: true })
+        if(response.data.senderEmail === state.email){
+          setCheckRequest(true)
+        }else if(response.data.senderEmail === other.email){
+          setRequestReceived(true)          
+        }else{
+          setCheckRequest(false)
+          setRequestReceived(false) 
+        }
     }
-    const checkRequestReceived = async () => {
-      const response = await axios.post(process.env.REACT_APP_API_URL + "/checkFriendRequest",
-        { senderEmail: other.email, receiverEmail: state.email, type: "friendRequest" }, { withCredentials: true })
-      setRequestReceived(response.data)
-    }
-    checkRequestSended()
-    checkRequestReceived()
+    checkRequest()
     return () => { setCheckRequest("") }
   }, [other, state])
 
@@ -103,12 +104,10 @@ const Other = ({ other, index }) => {
             <h6 className="text-truncate mb-0 overflow-visible">{other.email}</h6>
           </div>
         </div>
-        {!requestReceived ?
-        (!checkRequest ? <Button onClick={sendRequest} className="friendButton mx-auto my-auto" size="sm">Add Friend</Button>:
-        <Button onClick={cancelRequest} className="friendButton mx-auto my-auto" size="sm">Cancel</Button>):
-        (<></>)}
+        {(!checkRequest && !requestReceived) &&  <Button onClick={sendRequest} className="friendButton mx-auto my-auto" size="sm">Add Friend</Button>}
+        {(checkRequest && !requestReceived) && <Button onClick={cancelRequest} className="friendButton mx-auto my-auto" size="sm">Cancel</Button>}
       </div>
-      {checkRequest && <div className="d-flex">
+      {(!checkRequest && requestReceived) && <div className="d-flex">
       <div className="mx-auto">
         <Button className="my-auto mx-auto">Accept</Button>
       </div>

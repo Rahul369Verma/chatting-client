@@ -6,7 +6,7 @@ import Conversation from '../conversation/Conversation'
 import { SocketContext } from "../../context/socket";
 import SearchBar from '../SearchBar/SearchBar';
 
-const Chat = ({ getMessage, setGetMessage, messageConversation, MessageConversation, activeUsers }) => {
+const Chat = ({ getMessage, setGetMessage, messageConversation, MessageFriend, activeUsers }) => {
 
   const { state } = useContext(Context)
   const [input, setInput] = useState("")
@@ -44,7 +44,7 @@ const Chat = ({ getMessage, setGetMessage, messageConversation, MessageConversat
 
   useEffect(() => {
     getUser()
-  }, [messageConversation.newMessage])
+  }, [messageConversation])
 
   useEffect(() => {
     if (getMessage) {
@@ -78,6 +78,17 @@ const Chat = ({ getMessage, setGetMessage, messageConversation, MessageConversat
     })
   }, [conversations, messageConversation, state, socket])
 
+  useEffect(() => {
+    const getSearchConversation = async () => {
+      const response = await axios.get(process.env.REACT_APP_API_URL +
+         "/search/conversations?search=" + input, { withCredentials: true })
+      setConversations(response.data)
+    }
+    if (input !== "") {
+      getSearchConversation()
+    }
+  }, [input])
+
   return (
     <div>
       <SearchBar print="Conversations" setInput={setInput} input={input} />
@@ -88,7 +99,7 @@ const Chat = ({ getMessage, setGetMessage, messageConversation, MessageConversat
             if (item.email === state.email) {
               return null
             }
-            return <Conversation conversation={item} key={i} index={i} setMessageByConversation={MessageConversation} messageConversation={messageConversation} active={activeUsers} search={input} />
+            return <Conversation conversation={item} key={i} index={i} setMessageByFriend={MessageFriend} messageConversation={messageConversation} active={activeUsers}/>
           }))}
         </ul>
       </div>

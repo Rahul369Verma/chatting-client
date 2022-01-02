@@ -8,11 +8,13 @@ import { SocketContext } from "../../context/socket";
 
 
 
-const FriendRequest = ({ notification, index }) => {
+const FriendRequest = ({ notification, index, RemoveNotification }) => {
 
   const { state } = useContext(Context)
   const { socket } = useContext(SocketContext)
   const [user, setUser] = useState(false)
+  const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
+
 
   useEffect(() => {
     const getUser = async () => {
@@ -22,6 +24,24 @@ const FriendRequest = ({ notification, index }) => {
     }
     getUser()
   }, [notification])
+
+  const acceptRequest = async () => {
+    const response = await axiosInstance.post("acceptFriendRequest",
+      { data: notification }, { withCredentials: true })
+    console.log(response.data)
+    let email = notification.senderEmail
+    socket.socket?.current.emit("notification", { email })
+    RemoveNotification(notification)
+  }
+  const removeRequest = async () => {
+    const response = await axiosInstance.post("removeFriendRequest",
+      { data: notification }, { withCredentials: true })
+    console.log("notification removed", response.data)
+    console.log(socket)
+    let email = notification.senderEmail
+    socket.socket?.current.emit("notification", { email })
+    RemoveNotification(notification)
+  }
 
   return (
     <div>
@@ -42,10 +62,10 @@ const FriendRequest = ({ notification, index }) => {
         </div>
         <div style={{}} className="d-flex">
           <div className="mx-auto">
-            <Button className="my-auto mx-auto">Accept</Button>
+            <Button className="my-auto mx-auto btn-sm" onClick={acceptRequest}>Accept</Button>
           </div>
           <div className="mx-auto">
-            <Button className="my-auto mx-auto">Reject</Button>
+            <Button className="my-auto mx-auto btn-sm" onClick={removeRequest}>Reject</Button>
           </div>
         </div>
       </li>}

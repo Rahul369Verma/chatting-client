@@ -16,13 +16,18 @@ const FriendRequests = () => {
 
   useEffect(() => {
     const getAllNotifications = async () => {
-      const response = await axios.get(process.env.REACT_APP_API_URL + "/allNotification", { withCredentials: true })
+      const response = await axios.get(process.env.REACT_APP_API_URL + "/allRequests", { withCredentials: true })
       setNotifications(response.data)
     }
     getAllNotifications()
     return () => { setNotifications("") }
   }, [])
   console.log(notifications)
+
+  const RemoveNotification = (data) => {
+    const newNotifications = notifications.filter((e) => e !== data)
+    setNotifications(newNotifications)
+  }
 
   return (
     <div>
@@ -31,7 +36,7 @@ const FriendRequests = () => {
           <h3 className="px-4 pb-2">FriendRequests</h3>
           <ul className="list-unstyled m-0 chat-user-list">
             {(notifications?.map((item, i) => {
-              return <FriendRequest notification={item} key={i} index={i} />
+              return <FriendRequest notification={item} key={i} index={i} RemoveNotification={RemoveNotification} />
             }))
             }
           </ul>

@@ -41,12 +41,21 @@ const Friends = ({ MessageFriend }) => {
     getUser()
   }, [])
 
+  useEffect(() => {
+    const getSearchFriends = async () => {
+      const response = await axios.get(process.env.REACT_APP_API_URL +
+        "/search/Friends?search=" + input, { withCredentials: true })
+      setFriends(response.data)
+    }
+    if (input !== "") {
+      getSearchFriends()
+    }
+  }, [input])
 
-  
 
   return (
     <div>
-      <SearchBar print="Find Friends" setInput={setInput} input={input}/>
+      <SearchBar print="Find Friends" setInput={setInput} input={input} />
       <div className="pt-2">
         <h3 className="px-4 pb-2">Friends</h3>
         <ul className="list-unstyled m-0 chat-user-list">
@@ -54,7 +63,7 @@ const Friends = ({ MessageFriend }) => {
             if (item.email === state.email) {
               return null
             }
-            return <Friend friend={item} key={i} index={i} setMessageByFriend={MessageFriend} clicked={MessageFriend} search={input}/>
+            return <Friend friend={item} key={i} index={i} setMessageByFriend={MessageFriend}/>
           }))}
         </ul>
       </div>

@@ -16,6 +16,7 @@ import TopBar from "./TopBar/TopBar";
 import Chat from "./chat/Chat";
 import FriendRequests from "./friendRequest/FriendRequests";
 import Loader from "./loader/loader";
+import NotFriends from "./sendInput/NotFriend";
 
 
 
@@ -23,6 +24,7 @@ const Chatting = () => {
 
 
 	const { state } = useContext(Context)
+	const [notFriend, setNotFriend] = useState(false)
 	const { navigator, navigatorDispatch } = useContext(NavigatorContext)
 	const [scroll, setScroll] = useState("")
 	const [getMessage, setGetMessage] = useState(false)
@@ -72,12 +74,25 @@ const Chatting = () => {
 				setActiveUsers(users)
 			})
 		}
-		if (sessionStorage.getItem("messageFriend") || false) {
-			setMessageFriend(JSON.parse(sessionStorage.getItem("messageFriend")))
-		} else if (sessionStorage.getItem("messageConversation") || false) {
-			setMessageConversation(JSON.parse(sessionStorage.getItem("messageConversation")))
-		}
+		// if (sessionStorage.getItem("messageFriend") || false) {
+		// setMessageFriend(JSON.parse(sessionStorage.getItem("messageFriend")))
+
 	}, [state])
+
+	useEffect(() => {
+		if (sessionStorage.getItem("messageConversation") || false) {
+			setMessageConversation(JSON.parse(sessionStorage.getItem("messageConversation") || false))
+		}
+		if (sessionStorage.getItem("friendData") || false) {
+			setFriendData(JSON.parse(sessionStorage.getItem("friendData") || false))
+		}
+		if (sessionStorage.getItem("messageFriend") || false) {
+			setMessageFriend(true)
+		}
+		if (sessionStorage.getItem("notFriend") || false) {
+			setNotFriend(true)
+		}
+	}, [])
 
 	useEffect(() => {
 		const seen = async (arrivalMessage) => {
@@ -133,7 +148,7 @@ const Chatting = () => {
 			socket.current.off("welcome");
 			socket.current.off("getMessage");
 		};
-	}, [messageConversation._id, socket])
+	}, [messageConversation, socket])
 
 
 	useEffect(() => {
@@ -148,7 +163,7 @@ const Chatting = () => {
 		}
 		socket.current.on("getMessageSeen", ({ _id, conversationId }) => {
 			console.log("message Seen", _id)
-			if (messageConversation._id === conversationId) {
+			if (messageConversation?._id === conversationId) {
 				getMessages()
 				// setMessageData((prev) => {
 				// 	return prev.map(message => {
@@ -165,7 +180,7 @@ const Chatting = () => {
 		})
 		socket.current.on("getMessageDelivered", ({ _id, conversationId, all }) => {
 			console.log("message delivered", messageConversation, conversationId)
-			if (messageConversation._id === conversationId) {
+			if (messageConversation?._id === conversationId) {
 				getMessages()
 				// setMessageData((prev) => {
 				// 	return prev.map(message => {
@@ -184,7 +199,7 @@ const Chatting = () => {
 			socket.current.off("getMessageSeen");
 			socket.current.off("getMessageDelivered");
 		};
-	}, [messageConversation._id, socket])
+	}, [messageConversation, socket])
 
 	useEffect(() => {
 		const getMessages = async () => {
@@ -197,43 +212,61 @@ const Chatting = () => {
 				console.log(error)
 			}
 		}
-		if (messageConversation._id) {
+		if (messageConversation?._id) {
 			getMessages()
 		} else {
 			setMessageData([])
 		}
-	}, [messageConversation._id])
+	}, [messageConversation])
 
-	const MessageConversation = (conversation, friendData) => {
-		sessionStorage.setItem("messageConversation", JSON.stringify(conversation));
-		sessionStorage.setItem("friendData", JSON.stringify(friendData));
-		sessionStorage.removeItem("messageFriend")
-		setMessageFriend(false)
-		console.log("Message Conversation")
-		setFriendData(friendData)
-		setMessageConversation(conversation)
-	}
+	// const MessageConversation = async (conversation, friendData) => {
+	// 	const response = await axios.post(process.env.REACT_APP_API_URL + "/isFriend?email=" + friendData.email
+	// 		, { withCredentials: true })
+	// 	if (response.data === true) {
+	// 		sessionStorage.setItem("messageConversation", JSON.stringify(conversation));
+	// 		sessionStorage.setItem("friendData", JSON.stringify(friendData));
+	// 		// sessionStorage.removeItem("messageFriend")
+	// 		// setMessageFriend(false)
+	// 		// console.log("Message Conversation")
+	// 		setFriendData(friendData)
+	// 		setMessageConversation(conversation)
+	// 	} else {
+	// 		sessionStorage.removeItem("messageFriend")
+	// 		sessionStorage.removeItem("messageConversation")
+	// 		setFriendData(friendData)
+	// 		setNotFriend(true)
+	// 	}
+	// }
 
-	const MessageFriend = async (friend, friendData) => {
+	const MessageFriend = async (friendData) => {
 		try {
-			const response = await axiosInstance.post("conversationId",
-				{ friendId: friend._id }, { withCredentials: true })
-			if (response.data === "") {
-				console.log("Message Friend")
-				sessionStorage.setItem("messageFriend", JSON.stringify(friend));
+			const response = await axios.get(process.env.REACT_APP_API_URL + "/isFriend?email=" + friendData.email
+				, { withCredentials: true })
+			if (response.data.isFriend === true) {
+				setNotFriend(false)
+				sessionStorage.removeItem("notFriend")
 				sessionStorage.setItem("friendData", JSON.stringify(friendData));
-				sessionStorage.removeItem("messageConversation")
-				setMessageConversation(false)
 				setFriendData(friendData)
-				setMessageFriend(friend)
+				if (response.data.conversation) {
+					sessionStorage.setItem("messageConversation", JSON.stringify(response.data.conversation));
+					setMessageConversation(response.data.conversation)
+					sessionStorage.removeItem("messageFriend")
+					setMessageFriend(false)
+				} else {
+					console.log("friend")
+					setMessageFriend(true)
+					sessionStorage.setItem("messageFriend", true)
+					setMessageConversation(false)
+					sessionStorage.removeItem("messageConversation")
+				}
 			} else {
-				console.log("Message Friend Conversation")
-				sessionStorage.setItem("messageConversation", JSON.stringify(response.data));
-				sessionStorage.removeItem("messageFriend")
-				sessionStorage.setItem("friendData", JSON.stringify(friendData));
-				setFriendData(friendData)
+				setMessageConversation(false)
+				sessionStorage.removeItem("messageConversation")
 				setMessageFriend(false)
-				setMessageConversation(response.data)
+				sessionStorage.removeItem("messageFriend")
+				setFriendData(friendData)
+				setNotFriend(true)
+				sessionStorage.setItem("notFriend", true);
 			}
 		} catch (error) {
 			console.log(error)
@@ -248,7 +281,7 @@ const Chatting = () => {
 			<div style={{ position: "relative" }}>
 				<div className="split left">
 					{navigator.selected === "chat" && <div>
-						<Chat getMessage={getMessage} setGetMessage={setGetMessage} messageConversation={messageConversation} MessageConversation={MessageConversation} activeUsers={activeUsers} />
+						<Chat getMessage={getMessage} setGetMessage={setGetMessage} messageConversation={messageConversation} MessageFriend={MessageFriend} activeUsers={activeUsers} />
 					</div>}
 					{navigator.selected === "friends" && <div>
 						<Friends MessageFriend={MessageFriend} />
@@ -280,15 +313,15 @@ const Chatting = () => {
 						</div> */}
 
 				</div >
-				<div className={"split right " + (!messageFriend && !messageConversation ? "hide" : "show")} id="wrapper">
-					{(friendData) ? <TopBar friendData={friendData} activeUsers={activeUsers} messageConverId={messageConversation._id} /> : <></>}
+				<div className={"split right " + ((notFriend || messageConversation || messageFriend) ? "show" : "hide")} id="wrapper">
+					{(friendData) ? <TopBar friendData={friendData} activeUsers={activeUsers} messageConversation={messageConversation} /> : <></>}
 
 					<div className="message-outer">
 						<ul className="force-overflow scrollbar" id="message-scroll">
 							<div>
 								{
 									messageConversation && messageData.map((m, i) => (
-										< Messages messageConversationNewMessage={messageConversation.newMessage} setMessageConversation={setMessageConversation} message={m} key={i} index={i} messageConversationId={messageConversation._id} messageConversationLastId={messageConversation.lastMessageId} />
+										< Messages messageConversation={messageConversation} setMessageConversation={setMessageConversation} message={m} key={i} index={i}/>
 									))
 								}
 							</div>
@@ -297,9 +330,13 @@ const Chatting = () => {
 					</div>
 
 				</div>
-				{(messageFriend || messageConversation) ?
-					<SendInput setMessageConversation={setMessageConversation} MessageConversation={MessageConversation} messageConversationId={messageConversation._id} friendData={friendData} messageFriend={messageFriend} setMessageData={setMessageData} />
-					: <></>
+				{(notFriend) ?
+					<NotFriends />
+					: <>
+						{(messageConversation || messageFriend) &&
+							<SendInput setMessageConversation={setMessageConversation} messageConversationId={messageConversation._id} friendData={friendData} setMessageData={setMessageData} />
+						}
+					</>
 				}
 			</div >
 		)

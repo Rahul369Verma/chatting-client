@@ -8,7 +8,7 @@ import { SocketContext } from "../context/socket";
 
 
 
-const Messages = ({ setMessageConversation, message, index, messageConversationId, messageConversationLastId, messageConversationNewMessage, setScroll }) => {
+const Messages = ({ setMessageConversation, message, index, messageConversation }) => {
 
 
   const { state } = useContext(Context)
@@ -69,7 +69,7 @@ const Messages = ({ setMessageConversation, message, index, messageConversationI
         sendSeen(message)
       }
     }
-  }, [message, messageConversationId, socket, state])
+  }, [message, messageConversation, socket, state])
 
   useEffect(() => {
     const falseNewMessage = async (id) => {
@@ -77,15 +77,15 @@ const Messages = ({ setMessageConversation, message, index, messageConversationI
         { id: id }, { withCredentials: true })
       setMessageConversation((prev) => ({ ...prev, newMessage: false }))
     }
-    if (messageConversationNewMessage) {
+    if (messageConversation.newMessage) {
       if (message.senderEmail !== state.email) {
-        if (message._id === messageConversationLastId) {
-          console.log(messageConversationLastId)
-          falseNewMessage(messageConversationId)
+        if (message._id === messageConversation.lastMessageId) {
+          console.log(messageConversation.lastMessageId)
+          falseNewMessage(messageConversation._id)
         }
       }
     }
-  }, [message, messageConversationId, messageConversationLastId, state, setMessageConversation, messageConversationNewMessage])
+  }, [message, state, setMessageConversation, messageConversation])
 
 
   return (

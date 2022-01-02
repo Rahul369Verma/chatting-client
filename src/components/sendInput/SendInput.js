@@ -10,7 +10,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 
 
 
-const SendInput = ({ setMessageConversation , MessageConversation, messageConversationId, friendData, messageFriend, setMessageData }) => {
+const SendInput = ({ setMessageConversation, messageConversationId, friendData, setMessageData }) => {
 
   const { socket } = useContext(SocketContext)
   const [inputData, setInputData] = useState("")
@@ -25,16 +25,21 @@ const SendInput = ({ setMessageConversation , MessageConversation, messageConver
     e.preventDefault()
     const messageForm = {
       conversationId: messageConversationId,
-      friendId: messageFriend._id,
       senderEmail: state.email,
-      message: inputData
+      message: inputData,
+      friendName: friendData.name,
+      friendEmail: friendData.email,
+      myName: state.username,
+      myEmail: state.email
     }
     console.log(messageForm)
     try {
       const response = await axiosInstance.post("messagePost", messageForm, { withCredentials: true })
       setInputData("")
       console.log(response.data)
-      setMessageConversation((prev) => ({...prev, lastMessageId: response.data.messageSaved._id, lastMessage: messageForm.message}))
+      // setMessageConversation((prev) => ({...prev, lastMessageId: response.data.messageSaved._id, lastMessage: messageForm.message}))
+      // setMessageConversation(response.data.conversationSaved)
+      // sessionStorage.setItem("messageConversation", JSON.stringify(response.data.conversationSaved));
       setMessageData(prev => [...prev, response.data.messageSaved])
       if (messageConversationId) {
         console.log("Message send successfully", response.data)
@@ -47,7 +52,6 @@ const SendInput = ({ setMessageConversation , MessageConversation, messageConver
         })
       } else {
         console.log("Message send successfully", response.data)
-        MessageConversation(response.data.conversationSaved, friendData)
         socket.socket.current.emit("sendMessage", {
           _id: response.data.messageSaved._id,
           conversationId: response.data.conversationSaved._id,

@@ -13,12 +13,14 @@ const Others = () => {
   const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
   const { socket } = useContext(SocketContext)
   const [others, setOthers] = useState(false)
+  const [friends, setFriends] = useState([])
 
 
   useEffect(() => {
     const getOthers = async() =>{
       const response = await axios.post(process.env.REACT_APP_API_URL + "/otherUsers", {name: input}, { withCredentials: true })
-      setOthers(response.data)
+      setOthers(response.data.allUsers)
+      setFriends(response.data.friends)
     }
     if(input !== ""){
       getOthers()
@@ -49,3 +51,4 @@ const Others = () => {
 }
 
 export default Others
+// || friends.includes(item)

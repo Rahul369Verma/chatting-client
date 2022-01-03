@@ -38,8 +38,10 @@ const Friends = ({ MessageFriend }) => {
     }
   }
   useEffect(() => {
-    getUser()
-  }, [])
+    if (input === "") {
+      getUser()
+    }
+  }, [input])
 
   useEffect(() => {
     const getSearchFriends = async () => {
@@ -63,7 +65,7 @@ const Friends = ({ MessageFriend }) => {
             if (item.email === state.email) {
               return null
             }
-            return <Friend friend={item} key={i} index={i} setMessageByFriend={MessageFriend}/>
+            return <Friend friend={item} key={i} index={i} setMessageByFriend={MessageFriend} />
           }))}
         </ul>
       </div>

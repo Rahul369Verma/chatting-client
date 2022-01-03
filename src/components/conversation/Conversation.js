@@ -23,8 +23,13 @@ const Conversation = ({ conversation, index, setMessageByFriend, messageConversa
 
 
   useEffect(() => {
-    const getUser = async () => {
-      const friend = await conversation.members.find((e) => e.email !== state.email)
+    const getUser = () => {
+      let friend
+      if (conversation.members.email) {
+        friend = conversation.members
+      } else {
+        friend = conversation.members.find((e) => e.email !== state.email)
+      }
       setFriendData(friend)
     }
     getUser()

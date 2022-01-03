@@ -42,7 +42,7 @@ const Others = () => {
         <h3 className="px-4 pb-2">Others</h3>
         <ul className="list-unstyled m-0 chat-user-list">
           {(others?.map((item, i) => {
-            if (item.email === state.email || friends.includes(item)) {
+            if (item.email === state.email) {
               return null
             }
             for (let i = 0; i < friends.length; i++) {

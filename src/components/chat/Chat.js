@@ -39,8 +39,10 @@ const Chat = ({ getMessage, setGetMessage, messageConversation, MessageFriend, a
     }
   }
   useEffect(() => {
-    getUser()
-  }, [])
+    if (input === "") {
+      getUser()
+    }
+  }, [input])
 
   useEffect(() => {
     getUser()
@@ -81,7 +83,7 @@ const Chat = ({ getMessage, setGetMessage, messageConversation, MessageFriend, a
   useEffect(() => {
     const getSearchConversation = async () => {
       const response = await axios.get(process.env.REACT_APP_API_URL +
-         "/search/conversations?search=" + input, { withCredentials: true })
+        "/search/conversations?search=" + input, { withCredentials: true })
       setConversations(response.data)
     }
     if (input !== "") {
@@ -99,7 +101,7 @@ const Chat = ({ getMessage, setGetMessage, messageConversation, MessageFriend, a
             if (item.email === state.email) {
               return null
             }
-            return <Conversation conversation={item} key={i} index={i} setMessageByFriend={MessageFriend} messageConversation={messageConversation} active={activeUsers}/>
+            return <Conversation conversation={item} key={i} index={i} setMessageByFriend={MessageFriend} messageConversation={messageConversation} active={activeUsers} />
           }))}
         </ul>
       </div>

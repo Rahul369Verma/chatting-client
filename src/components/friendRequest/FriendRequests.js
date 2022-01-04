@@ -5,7 +5,7 @@ import { Context } from '../../context';
 import { SocketContext } from "../../context/socket";
 import FriendRequest from './FriendRequest';
 
-const FriendRequests = () => {
+const FriendRequests = ({MessageFriend, friendData, messageConversation}) => {
 
   const { state } = useContext(Context)
   const [input, setInput] = useState("")
@@ -36,7 +36,7 @@ const FriendRequests = () => {
           <h3 className="px-4 pb-2">FriendRequests</h3>
           <ul className="list-unstyled m-0 chat-user-list">
             {(notifications?.map((item, i) => {
-              return <FriendRequest notification={item} key={i} index={i} RemoveNotification={RemoveNotification} />
+              return <FriendRequest messageConversation={messageConversation} notification={item} key={i} index={i} RemoveNotification={RemoveNotification} MessageFriend={MessageFriend} friendData={friendData} />
             }))
             }
           </ul>

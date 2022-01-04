@@ -18,7 +18,8 @@ const NotificationModal = ({ setNotificationReceived, isOpen, toggleModal }) => 
     socket.socket?.current.on("notification", async () => {
       const response = await axios.get(process.env.REACT_APP_API_URL + "/allNotification", { withCredentials: true })
       if (isOpen) {
-        setAllNotifications(response.data)
+        let reverseArray = response.data.reverse()
+        setAllNotifications(reverseArray)
       }
     })
   }, [socket, isOpen])
@@ -32,7 +33,8 @@ const NotificationModal = ({ setNotificationReceived, isOpen, toggleModal }) => 
         }
       }
       if (isOpen) {
-        setAllNotifications(response.data)
+        let reverseArray = response.data.reverse()
+        setAllNotifications(reverseArray)
       }
     }
     getAllNotifications()

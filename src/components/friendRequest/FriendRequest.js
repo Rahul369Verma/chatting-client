@@ -8,7 +8,7 @@ import { SocketContext } from "../../context/socket";
 
 
 
-const FriendRequest = ({ notification, index, RemoveNotification }) => {
+const FriendRequest = ({ notification, index, RemoveNotification, friendData, MessageFriend, messageConversation }) => {
 
   const { state } = useContext(Context)
   const { socket } = useContext(SocketContext)
@@ -30,7 +30,12 @@ const FriendRequest = ({ notification, index, RemoveNotification }) => {
       { data: notification }, { withCredentials: true })
     console.log(response.data)
     let email = notification.senderEmail
+    let myEmail = state.email
     socket.socket?.current.emit("notification", { email })
+    socket.socket?.current.emit("checkFriend", { email, myEmail })
+    if(email === friendData.email){
+      MessageFriend(friendData, messageConversation)
+    }
     RemoveNotification(notification)
   }
   const removeRequest = async () => {

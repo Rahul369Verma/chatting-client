@@ -261,10 +261,11 @@ const Chatting = () => {
 				}
 			} else {
 				setMessageConversation(conversation)
-				sessionStorage.setItem("messageConversation", JSON.stringify(conversation));
+				sessionStorage.setItem("messageConversation", JSON.stringify(conversation))
 				setMessageFriend(false)
 				sessionStorage.removeItem("messageFriend")
 				setFriendData(friendData)
+				sessionStorage.setItem("friendData", JSON.stringify(friendData))
 				setNotFriend(true)
 				sessionStorage.setItem("notFriend", true);
 			}
@@ -287,10 +288,10 @@ const Chatting = () => {
 						<Friends MessageFriend={MessageFriend} />
 					</div>}
 					{navigator.selected === "others" && <div>
-						<Others />
+						<Others messageConversation={messageConversation} friendData={friendData} MessageFriend={MessageFriend} />
 					</div>}
 					{navigator.selected === "friendRequests" && <div>
-						<FriendRequests />
+						<FriendRequests friendData={friendData} MessageFriend={MessageFriend} messageConversation={messageConversation} />
 					</div>}
 					{/* <div className="px-4 pt-2">
 							<div className="">
@@ -314,7 +315,7 @@ const Chatting = () => {
 
 				</div >
 				<div className={"split right " + ((notFriend || messageConversation || messageFriend) ? "show" : "hide")} id="wrapper">
-					{(friendData) ? <TopBar MessageFriend={MessageFriend} friendData={friendData} activeUsers={activeUsers} messageConversation={messageConversation} /> : <></>}
+					{(friendData) ? <TopBar notFriend={notFriend} MessageFriend={MessageFriend} friendData={friendData} activeUsers={activeUsers} messageConversation={messageConversation} /> : <></>}
 
 					<div className="message-outer">
 						<ul className="force-overflow scrollbar" id="message-scroll">
@@ -331,7 +332,7 @@ const Chatting = () => {
 
 				</div>
 				{(notFriend) ?
-					<NotFriends />
+					<NotFriends MessageFriend={MessageFriend} friendData={friendData} messageConversation={messageConversation} />
 					: <>
 						{(messageConversation || messageFriend) &&
 							<SendInput setMessageConversation={setMessageConversation} messageConversationId={messageConversation._id} friendData={friendData} setMessageData={setMessageData} />

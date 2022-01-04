@@ -9,7 +9,7 @@ import { SocketContext } from "../../context/socket";
 
 
 
-const Other = ({ other, index, RemoveNotification }) => {
+const Other = ({ other, index, RemoveNotification, messageConversation, friendData, MessageFriend }) => {
 
   const { state } = useContext(Context)
   const { socket } = useContext(SocketContext)
@@ -29,8 +29,13 @@ const Other = ({ other, index, RemoveNotification }) => {
       { data: requestReceived }, { withCredentials: true })
     console.log(response.data)
     let email = other.email
+    let myEmail = state.email
     socket.socket?.current.emit("notification", { email })
+    socket.socket?.current.emit("checkFriend1", { email, myEmail })
     RemoveNotification(other)
+    if(email === friendData.email){
+      MessageFriend(friendData, messageConversation)
+    }
   }
   const removeRequest = async () => {
     const response = await axiosInstance.post("removeFriendRequest",

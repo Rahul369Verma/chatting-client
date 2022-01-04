@@ -25,7 +25,9 @@ const Notification = ({ RemoveNotification, data, index }) => {
       { data: data }, { withCredentials: true })
     console.log(response.data)
     let email = data.senderEmail
+    let myEmail = state.email
     socket.socket?.current.emit("notification", { email })
+    socket.socket?.current.emit("checkFriend", { email, myEmail })
     RemoveNotification(data)
   }
   const removeRequest = async () => {
@@ -71,8 +73,8 @@ const Notification = ({ RemoveNotification, data, index }) => {
               <Card.Title>Friend Request received from {user?.name}({user?.email})
                 <ion-icon style={{ cursor: "pointer", marginLeft: "40%" }} onClick={deleteNotification} name="trash"></ion-icon>
               </Card.Title>
-              <Button onClick={acceptRequest}>Accept</Button>
-              <Button onClick={removeRequest}>Remove</Button>
+              {/* <Button onClick={acceptRequest}>Accept</Button>
+              <Button onClick={removeRequest}>Remove</Button> */}
             </Card.Body>
           </Card>) :
           (data.type === "acceptFriendRequest") ?

@@ -6,7 +6,7 @@ import { SocketContext } from "../../context/socket";
 import SearchBar from '../SearchBar/SearchBar';
 import Other from './Other';
 
-const Others = () => {
+const Others = ({ messageConversation, friendData, MessageFriend}) => {
 
   const { state } = useContext(Context)
   const [input, setInput] = useState("")
@@ -50,7 +50,7 @@ const Others = () => {
                 return null
               }              
             }
-            return <Other other={item} key={i} index={i} RemoveNotification={RemoveNotification} />
+            return <Other other={item} key={i} index={i} RemoveNotification={RemoveNotification} messageConversation={messageConversation} friendData={friendData} MessageFriend={MessageFriend} />
           }))}
         </ul>
       </div>)

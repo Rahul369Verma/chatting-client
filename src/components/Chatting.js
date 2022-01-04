@@ -261,7 +261,7 @@ const Chatting = () => {
 				}
 			} else {
 				setMessageConversation(conversation)
-				sessionStorage.setItem("messageConversation", JSON.stringify(response.data.conversation));
+				sessionStorage.setItem("messageConversation", JSON.stringify(conversation));
 				setMessageFriend(false)
 				sessionStorage.removeItem("messageFriend")
 				setFriendData(friendData)

@@ -58,7 +58,7 @@ const Conversation = ({ conversation, index, setMessageByFriend, messageConversa
 
   return (
     <div>
-      {friendData ? <li key={index} onClick={(e) => { setMessageByFriend(friendData) }}>
+      {friendData ? <li key={index} onClick={(e) => { setMessageByFriend(friendData, conversation) }}>
         <div className={"px-4 chat-list-conversation " + (messageConversation?._id === conversation._id ? "active" : "")}>
           <div className="d-flex align-items-center">
             <div className="chat-user-img align-self-center me-2">

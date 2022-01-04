@@ -238,7 +238,7 @@ const Chatting = () => {
 	// 	}
 	// }
 
-	const MessageFriend = async (friendData) => {
+	const MessageFriend = async (friendData, conversation) => {
 		try {
 			const response = await axios.get(process.env.REACT_APP_API_URL + "/isFriend?email=" + friendData.email
 				, { withCredentials: true })
@@ -260,8 +260,8 @@ const Chatting = () => {
 					sessionStorage.removeItem("messageConversation")
 				}
 			} else {
-				setMessageConversation(false)
-				sessionStorage.removeItem("messageConversation")
+				setMessageConversation(conversation)
+				sessionStorage.setItem("messageConversation", JSON.stringify(response.data.conversation));
 				setMessageFriend(false)
 				sessionStorage.removeItem("messageFriend")
 				setFriendData(friendData)
@@ -314,7 +314,7 @@ const Chatting = () => {
 
 				</div >
 				<div className={"split right " + ((notFriend || messageConversation || messageFriend) ? "show" : "hide")} id="wrapper">
-					{(friendData) ? <TopBar friendData={friendData} activeUsers={activeUsers} messageConversation={messageConversation} /> : <></>}
+					{(friendData) ? <TopBar MessageFriend={MessageFriend} friendData={friendData} activeUsers={activeUsers} messageConversation={messageConversation} /> : <></>}
 
 					<div className="message-outer">
 						<ul className="force-overflow scrollbar" id="message-scroll">

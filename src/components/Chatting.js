@@ -96,15 +96,15 @@ const Chatting = () => {
 
 	useEffect(() => {
 		const seen = async (arrivalMessage) => {
-			// await axios.post(process.env.REACT_APP_API_URL + "/seen",
-			// 	{ id: arrivalMessage._id }, { withCredentials: true })
+			await axios.post(process.env.REACT_APP_API_URL + "/seen",
+				{ id: arrivalMessage._id }, { withCredentials: true })
 			setMessageData(prev => [...prev, arrivalMessage])
 			setMessageConversation((prev) => ({ ...prev, lastMessageId: arrivalMessage._id, lastMessage: arrivalMessage.message }))
-			// socket.current.emit("messageSeen", {
-			// 	conversationId: arrivalMessage.conversationId,
-			// 	senderEmail: arrivalMessage.senderEmail,
-			// 	_id: arrivalMessage._id
-			// })
+			socket.current.emit("messageSeen", {
+				conversationId: arrivalMessage.conversationId,
+				senderEmail: arrivalMessage.senderEmail,
+				_id: arrivalMessage._id
+			})
 		}
 		const delivered = async (arrivalMessage) => {
 			await axios.post(process.env.REACT_APP_API_URL + "/deliveredById",

@@ -164,7 +164,7 @@ const Chatting = () => {
 		socket.current.on("getMessageSeen", ({ _id, conversationId }) => {
 			console.log("message Seen", _id)
 			if (messageConversation?._id === conversationId) {
-				// getMessages()
+				getMessages()
 				// let newArray = messageData
 				// for (let i = 0; i < newArray.length; i++) {
 				// 	if(newArray[i]._id === _id){
@@ -173,17 +173,17 @@ const Chatting = () => {
 				// 	}
 				// }
 				// setMessageData(newArray)
-				setMessageData((prev) => {
-					return prev.map(message => {
-						if (message._id === _id) {
-							return {
-								...message,
-								status: "seen"
-							}
-						}
-						return message
-					})
-				})
+				// setMessageData((prev) => {
+				// 	return prev.map(message => {
+				// 		if (message._id === _id) {
+				// 			return {
+				// 				...message,
+				// 				status: "seen"
+				// 			}
+				// 		}
+				// 		return message
+				// 	})
+				// })
 			}
 		})
 		socket.current.on("getMessageDelivered", ({ _id, conversationId, all }) => {

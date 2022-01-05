@@ -92,7 +92,7 @@ const Chat = ({ getMessage, setGetMessage, messageConversation, MessageFriend, a
   }, [input])
 
   return (
-    <div>
+    <div style={{}}>
       <SearchBar print="Conversations" setInput={setInput} input={input} />
       <div className="pt-2">
         <h3 className="px-4 pb-2">Recent</h3>

@@ -6,11 +6,11 @@ import Login from "./components/Login"
 import Chatting from "./components/Chatting"
 import Logout from "./components/Logout";
 import Error from "./components/Error"
-
 import './App.css'
 import { Provider } from './context';
 import { NavigatorProvider } from './context/Navigator';
 import { SocketProvider } from './context/socket'
+import SideNavBar from './components/SideNavbar/SideNavBar'
 
 
 const App = () => {
@@ -20,16 +20,19 @@ const App = () => {
     <Provider>
       <NavigatorProvider>
         <SocketProvider>
-          <BrowserRouter style={{position: ""}}>
+          <BrowserRouter>
             <Navigator />
-            <Switch> {/* by switch we can handle err page */}
-              <Route exact path='/'><Home /></Route>
-              <Route exact path='/register'><Register /></Route>
-              <Route exact path='/login'><Login /></Route>
-              <Route exact path='/chatting'><Chatting /></Route>
-              <Route exact path='/logout'><Logout /></Route>
-              <Route><Error /></Route> {/* Error Page */}
-            </Switch>
+            <div style={{ display: "flex" }}>
+              <SideNavBar />
+              <Switch> {/* by switch we can handle err page */}
+                <Route exact path='/'><Home /></Route>
+                <Route exact path='/register'><Register /></Route>
+                <Route exact path='/login'><Login /></Route>
+                <Route exact path='/chatting'><Chatting /></Route>
+                <Route exact path='/logout'><Logout /></Route>
+                <Route><Error /></Route> {/* Error Page */}
+              </Switch>
+            </div>
           </BrowserRouter>
         </SocketProvider>
       </NavigatorProvider>

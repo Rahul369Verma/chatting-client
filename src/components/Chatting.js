@@ -164,42 +164,54 @@ const Chatting = () => {
 		socket.current.on("getMessageSeen", ({ _id, conversationId }) => {
 			console.log("message Seen", _id)
 			if (messageConversation?._id === conversationId) {
-				getMessages()
-				// setMessageData((prev) => {
-				// 	return prev.map(message => {
-				// 		if (message._id === _id) {
-				// 			return {
-				// 				...message,
-				// 				status: "seen"
-				// 			}
-				// 		}
-				// 		return message
-				// 	})
-				// })
+				// getMessages()
+				// let newArray = messageData
+				// for (let i = 0; i < newArray.length; i++) {
+				// 	if(newArray[i]._id === _id){
+				// 		console.log("seen")
+				// 		newArray[i].status = "seen"
+				// 	}
+				// }
+				// setMessageData(newArray)
+				setMessageData((prev) => {
+					return prev.map(message => {
+						if (message._id === _id) {
+							return {
+								...message,
+								status: "seen"
+							}
+						}
+						return message
+					})
+				})
 			}
 		})
 		socket.current.on("getMessageDelivered", ({ _id, conversationId, all }) => {
 			console.log("message delivered", messageConversation, conversationId)
 			if (messageConversation?._id === conversationId) {
-				getMessages()
-				// setMessageData((prev) => {
-				// 	return prev.map(message => {
-				// 		if (message._id === _id) {
-				// 			return {
-				// 				...message,
-				// 				status: "delivered"
-				// 			}
-				// 		}
-				// 		return message
-				// 	})
-				// })
+				if (all) {
+					getMessages()
+
+				} else {
+					setMessageData((prev) => {
+						return prev.map(message => {
+							if (message._id === _id) {
+								return {
+									...message,
+									status: "delivered"
+								}
+							}
+							return message
+						})
+					})
+				}
 			}
 		})
 		return () => {
 			socket.current.off("getMessageSeen");
 			socket.current.off("getMessageDelivered");
 		};
-	}, [messageConversation, socket])
+	}, [messageConversation, socket, messageData])
 
 	useEffect(() => {
 		const getMessages = async () => {
@@ -279,21 +291,22 @@ const Chatting = () => {
 
 	if (Auth.getAuth()) {
 		return (
-			<div style={{ position: "relative" }}>
-				<div className="split left">
-					{navigator.selected === "chat" && <div>
-						<Chat getMessage={getMessage} setGetMessage={setGetMessage} messageConversation={messageConversation} MessageFriend={MessageFriend} activeUsers={activeUsers} />
-					</div>}
-					{navigator.selected === "friends" && <div>
-						<Friends MessageFriend={MessageFriend} />
-					</div>}
-					{navigator.selected === "others" && <div>
-						<Others messageConversation={messageConversation} friendData={friendData} MessageFriend={MessageFriend} />
-					</div>}
-					{navigator.selected === "friendRequests" && <div>
-						<FriendRequests friendData={friendData} MessageFriend={MessageFriend} messageConversation={messageConversation} />
-					</div>}
-					{/* <div className="px-4 pt-2">
+			<div className="split" style={{}}>
+				<div className="d-flex">
+					<div className="left">
+						{navigator.selected === "chat" && <div>
+							<Chat getMessage={getMessage} setGetMessage={setGetMessage} messageConversation={messageConversation} MessageFriend={MessageFriend} activeUsers={activeUsers} />
+						</div>}
+						{navigator.selected === "friends" && <div>
+							<Friends MessageFriend={MessageFriend} />
+						</div>}
+						{navigator.selected === "others" && <div>
+							<Others messageConversation={messageConversation} friendData={friendData} MessageFriend={MessageFriend} />
+						</div>}
+						{navigator.selected === "friendRequests" && <div>
+							<FriendRequests friendData={friendData} MessageFriend={MessageFriend} messageConversation={messageConversation} />
+						</div>}
+						{/* <div className="px-4 pt-2">
 							<div className="">
 								<h3>Recent</h3>
 								<ul>
@@ -313,32 +326,34 @@ const Chatting = () => {
 							})}
 						</div> */}
 
-				</div >
-				<div className={"split right " + ((notFriend || messageConversation || messageFriend) ? "show" : "hide")} id="wrapper">
-					{(friendData) ? <TopBar notFriend={notFriend} MessageFriend={MessageFriend} friendData={friendData} activeUsers={activeUsers} messageConversation={messageConversation} /> : <></>}
-
-					<div className="message-outer">
-						<ul className="force-overflow scrollbar" id="message-scroll">
-							<div>
-								{
-									messageConversation && messageData.map((m, i) => (
-										< Messages messageConversation={messageConversation} setMessageConversation={setMessageConversation} message={m} key={i} index={i}/>
-									))
+					</div >
+					<div className={"split right " + ((notFriend || messageConversation || messageFriend) ? "show" : "hide")} id="wrapper">
+						<div className="message-outer">
+							{(friendData) ? <TopBar notFriend={notFriend} MessageFriend={MessageFriend} friendData={friendData} activeUsers={activeUsers} messageConversation={messageConversation} /> : <></>}
+							<ul className="force-overflow scrollbar" id="message-scroll">
+								<div>
+									{
+										messageConversation && messageData.map((m, i) => (
+											< Messages messageConversation={messageConversation} setMessageConversation={setMessageConversation} message={m} key={i} index={i} />
+										))
+									}
+								</div>
+								<li ref={(el) => { setScroll(el) }} style={{ position: "relative", display: "flex" }}></li>
+							</ul>
+						</div>
+						{(notFriend) ?
+							<NotFriends MessageFriend={MessageFriend} friendData={friendData} messageConversation={messageConversation} />
+							: <>
+								{(messageConversation || messageFriend) &&
+									<SendInput setMessageConversation={setMessageConversation} messageConversationId={messageConversation._id} friendData={friendData} setMessageData={setMessageData} />
 								}
-							</div>
-							<li ref={(el) => { setScroll(el) }} style={{ position: "relative", display: "flex" }}></li>
-						</ul>
-					</div>
-
-				</div>
-				{(notFriend) ?
-					<NotFriends MessageFriend={MessageFriend} friendData={friendData} messageConversation={messageConversation} />
-					: <>
-						{(messageConversation || messageFriend) &&
-							<SendInput setMessageConversation={setMessageConversation} messageConversationId={messageConversation._id} friendData={friendData} setMessageData={setMessageData} />
+							</>
 						}
-					</>
-				}
+					</div>
+				</div>
+
+
+
 			</div >
 		)
 	} else if (Auth.getAuth() === false) {

@@ -1,10 +1,8 @@
 .outer {
   display: flex;
-  position: absolute;
-  top: 75vh;
+  position: relative;
   height: 15vh;
-  width: 70%;
-  left: 30%;
+  /* top: 0%; */
   background-color: #f2f2f2;
 }
 .inner-form {

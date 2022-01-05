@@ -49,7 +49,7 @@ const TopBar = ({ notFriend, MessageFriend, friendData, activeUsers, messageConv
             <p className="text-truncate text-muted m-0"><small style={{ color: "green" }}>{activeUsers.some(u => u.userEmail === friendData.email) ? print : ""}</small></p>
           </div>
         </div>
-        <div className='pt-2 mr-2' style={{ top: "0%", right: "2%", position: "absolute" }}>
+        <div className='pt-2 mr-2' style={{ top: "6%", right: "4%", position: "absolute" }}>
           {!notFriend && <Dropdown>
             <Dropdown.Toggle style={{ all: "unset", cursor: "pointer" }}>
               <ion-icon style={{ color: "#797c8c" }} size="large" name="more"></ion-icon>

@@ -1,9 +1,7 @@
 .topBar {
   position: sticky;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 1;
+  /* height: auto; */
+  /* z-index: 1; */
   background-color: hsla(0,0%,100%,.05);
   border-bottom: 1px solid #eaeaf1;
   -webkit-backdrop-filter: blur(7px);

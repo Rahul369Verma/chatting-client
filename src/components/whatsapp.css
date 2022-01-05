@@ -1,22 +1,23 @@
 .split {
-  overflow: auto;
+  position: relative;
+  width: 100%;
+  /* overflow: auto; */
 }
 
 .left {
   height: 90vh;
-  display: inline-block;
+  /* display: inline-block; */
   width: 25%;
-  left: 5%;
+  /* left: 0%; */
   position: relative;
   /* background-image: url("http://doot-light.react.themesbrand.com/static/media/pattern-05.ffd181cd.png&quot"); */
   background-color: white;
 }
 
 .right {
-  left: 30%;
-  position: absolute;
-  display: inline-block;
-  width: 70%;
+  position: relative;
+  width: 75%;
+  /* display: inline-block; */
   background-color: #f2f2f2;
   background-image: url("http://doot-light.react.themesbrand.com/static/media/pattern-05.ffd181cd.png");
   /* background-image: url(""); */
@@ -30,6 +31,9 @@
 
 
 .message-outer{
+  overflow-y: scroll;
+  height: 75vh;
+  position: relative;
   width: 100%;
 }
 .topBar {

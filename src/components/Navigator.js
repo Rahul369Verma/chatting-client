@@ -1,25 +1,20 @@
 import { useContext, useState, useEffect } from "react"
 import { Context } from '../context';
 import RegisterAdmin from './RegisterAdmin'
-import { useLocation } from 'react-router-dom';
 import { Nav, NavDropdown, Navbar, Container } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
 import axios from "axios";
 import NotificationModal from "./NotificationModal";
 import { SocketContext } from "../context/socket";
-import { NavigatorContext } from '../context/Navigator';
-import SideNav, { NavItem, NavIcon } from '@trendmicro/react-sidenav';
-import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 
 
 const Navigator = () => {
   const { state } = useContext(Context)
+  const location = useLocation();
   const { socket } = useContext(SocketContext)
-  const { navigator, navigatorDispatch } = useContext(NavigatorContext)
   const [notificationReceived, setNotificationReceived] = useState(false)
   const [toggle, setToggle] = useState(false)
-  const [selectedState, setSelectedState] = useState("chat")
   const [toggleNotification, setToggleNotification] = useState(false)
-  const location = useLocation();
   const axiosInstance = axios.create({ baseURL: process.env.REACT_APP_API_URL })
 
 
@@ -68,8 +63,8 @@ const Navigator = () => {
 
   return (
     <div style={{ width: "100%" }}>
-      <Navbar style={{ position: "relative", width: "100%", height: "10vh" }} bg="light" expand="lg">
-        <Container>
+      <Navbar style={{ position: "relative", width: "100%", height: "10vh", zIndex: "" }} bg="light" expand="sm" fixed="top" collapseOnSelect>
+        <Container style={{ display: "flex" }}>
           <Navbar.Brand href="/">
             <img
               src="https://www.logolynx.com/images/logolynx/21/214fba9d9e8566bf92d15c66bf919d16.png"
@@ -81,8 +76,8 @@ const Navigator = () => {
             />
             Rahul Verma
           </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
+          <Navbar.Toggle style={{ backgroundColor: "" }} aria-controls="basic-navbar-nav" />
+          <Navbar.Collapse id="basic-navbar-nav" bg="light" style={{ zIndex: "4", position: "relative" }}>
             <Nav className="me-auto">
               {(state.type === "admin") ? (
                 <>
@@ -147,55 +142,6 @@ const Navigator = () => {
           </Navbar.Collapse>
         </Container >
       </Navbar >
-      {(state.email || state.username) && (location.pathname === "/chatting") && (
-        <SideNav onSelect={(selected) => {
-          console.log(selected)
-          setSelectedState(selected)
-          navigatorDispatch({
-            type: "CHANGE",
-            payload: selected
-          })
-
-        }} style={{ backgroundColor: "#2e2e2e", position: "absolute", top: "10%", width: "5%", display: "block" }}>
-          <SideNav.Nav defaultSelected="chat">
-            <NavItem eventKey="profile" style={{}}>
-              <NavIcon>
-                <div className="pt-2" style={selectedState === "profile"? {color: "green"}: {}}>
-                  <ion-icon name="contact" style={{ fontSize: '25px' }}></ion-icon>
-                </div>
-              </NavIcon>
-            </NavItem>
-            <NavItem eventKey="chat" style={{ marginTop: "20px", marginBottom: "20px" }}>
-              <NavIcon>
-                <div className="pt-2" style={selectedState === "chat"? {color: "green"}: {}}>
-                  <ion-icon name="chatbubbles" style={{ fontSize: '25px' }}></ion-icon>
-                </div>
-              </NavIcon>
-            </NavItem>
-            <NavItem eventKey="friendRequests" style={{ marginTop: "20px", marginBottom: "20px" }}>
-              <NavIcon>
-                <div className="" style={selectedState === "friendRequests"? {color: "green"}: {}}>
-                  <i class="bi bi-person-plus-fill" style={{ fontSize: '25px' }}></i>
-                </div>
-              </NavIcon>
-            </NavItem>
-            <NavItem eventKey="friends" style={{ marginTop: "20px", marginBottom: "20px" }}>
-              <NavIcon>
-                <div className="pt-2" style={selectedState === "friends"? {color: "green"}: {}}>
-                  <ion-icon name="people" style={{ fontSize: '29px' }}></ion-icon>
-                </div>
-              </NavIcon>
-            </NavItem>
-            <NavItem eventKey="others" style={{ marginTop: "20px", marginBottom: "20px" }}>
-              <NavIcon>
-                <div className="" style={selectedState === "others"? {color: "green"}: {}}>
-                  <i class="bi bi-search" style={{ fontSize: '21px' }}></i>
-                </div>
-              </NavIcon>
-            </NavItem>
-          </SideNav.Nav>
-        </SideNav>
-      )}
     </div>
   )
 }

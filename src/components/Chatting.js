@@ -162,7 +162,7 @@ const Chatting = () => {
 			}
 		}
 		socket.current.on("getMessageSeen", ({ _id, conversationId }) => {
-			console.log("message Seen", _id)
+			console.log("message Seen", _id, conversationId)
 			if (messageConversation?._id === conversationId) {
 				// getMessages()
 				// let newArray = messageData
@@ -178,7 +178,8 @@ const Chatting = () => {
 						if (message._id === _id) {
 							return {
 								...message,
-								status: "seen"
+								status: "seen",
+								unseen: "rerender"
 							}
 						}
 						return message

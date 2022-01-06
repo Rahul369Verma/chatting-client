@@ -13,7 +13,7 @@ const Messages = ({ setMessageConversation, message, index, messageConversation 
 
   const { state } = useContext(Context)
   const { socket } = useContext(SocketContext)
-  // const [status, setStatus] = useState("send")
+  const [status, setStatus] = useState("send")
 
 
 
@@ -87,6 +87,10 @@ const Messages = ({ setMessageConversation, message, index, messageConversation 
     }
   }, [message, state, setMessageConversation, messageConversation])
 
+  useEffect(() => {
+    setStatus(message.status)
+  }, [message.status])
+
 
   return (
     <li style={message.senderEmail === state.email ? senderStyle : receiverStyle}>
@@ -111,9 +115,9 @@ const Messages = ({ setMessageConversation, message, index, messageConversation 
           </small>
           {message.senderEmail === state.email && (
             <div>
-              {(message.status === "seen") && (<ion-icon style={{ color: "red" }} name="done-all"></ion-icon>)}
-              {(message.status === "delivered") && (<ion-icon name="done-all"></ion-icon>)}
-              {(message.status === "send") && (<ion-icon name="checkmark"></ion-icon>)}
+              {(status === "seen") && (<ion-icon style={{ color: "red" }} name="done-all"></ion-icon>)}
+              {(status === "delivered") && (<ion-icon name="done-all"></ion-icon>)}
+              {(status === "send") && (<ion-icon name="checkmark"></ion-icon>)}
             </div>
           )}
         </div>

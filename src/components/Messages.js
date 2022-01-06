@@ -57,16 +57,16 @@ const Messages = ({ setMessageConversation, message, index, messageConversation 
   useEffect(() => {
     const sendSeen = async (m) => {
       await axios.post(process.env.REACT_APP_API_URL + "/seen",
-        { id: m._id }, { withCredentials: true })
+        { id: message._id }, { withCredentials: true })
       socket?.socket?.current.emit("messageSeen", {
         conversationId: message.conversationId,
-        _id: m._id,
-        senderEmail: m.senderEmail
+        _id: message._id,
+        senderEmail: message.senderEmail
       })
     }
     if (message.senderEmail !== state.email) {
       if (message.status !== "seen") {
-        sendSeen(message)
+        sendSeen()
       }
     }
   }, [message, messageConversation, socket, state])
@@ -111,9 +111,9 @@ const Messages = ({ setMessageConversation, message, index, messageConversation 
           </small>
           {message.senderEmail === state.email && (
             <div>
-              {(message.status === "seen") && (<><ion-icon style={{ color: "red" }} name="done-all"></ion-icon></>)}
-              {(message.status === "delivered") && (<><ion-icon name="done-all"></ion-icon></>)}
-              {(message.status === "send") && (<><ion-icon name="checkmark"></ion-icon></>)}
+              {(message.status === "seen") && (<ion-icon style={{ color: "red" }} name="done-all"></ion-icon>)}
+              {(message.status === "delivered") && (<ion-icon name="done-all"></ion-icon>)}
+              {(message.status === "send") && (<ion-icon name="checkmark"></ion-icon>)}
             </div>
           )}
         </div>

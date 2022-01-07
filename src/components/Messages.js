@@ -91,6 +91,39 @@ const Messages = ({ setMessageConversation, message, index, messageConversation 
     setStatus(message.status)
   }, [message.status])
 
+  useEffect(() => {
+    socket.socket?.current.on("getMessageSeen", ({ _id, conversationId }) => {
+			console.log("message Seen", _id, conversationId)
+			if (_id === message._id) {
+        setStatus("seen")
+				// getMessages()
+				// let newArray = messageData
+				// for (let i = 0; i < newArray.length; i++) {
+				// 	if(newArray[i]._id === _id){
+				// 		console.log("seen")
+				// 		newArray[i].status = "seen"
+				// 	}
+				// }
+				// setMessageData(newArray)
+				// setMessageData((prev) => {
+				// 	return prev.map(message => {
+				// 		if (message._id === _id) {
+				// 			return {
+				// 				...message,
+				// 				status: "seen",
+				// 			}
+				// 		}
+				// 		return message
+				// 	})
+				// })
+			}
+		})
+    return () => {
+			socket.socket?.current.off("getMessageSeen");
+      setStatus("")
+		};
+  }, [socket, message])
+
 
   return (
     <li style={message.senderEmail === state.email ? senderStyle : receiverStyle}>

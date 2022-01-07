@@ -161,32 +161,31 @@ const Chatting = () => {
 				console.log(error)
 			}
 		}
-		socket.current.on("getMessageSeen", ({ _id, conversationId }) => {
-			console.log("message Seen", _id, conversationId)
-			if (messageConversation?._id === conversationId) {
-				// getMessages()
-				// let newArray = messageData
-				// for (let i = 0; i < newArray.length; i++) {
-				// 	if(newArray[i]._id === _id){
-				// 		console.log("seen")
-				// 		newArray[i].status = "seen"
-				// 	}
-				// }
-				// setMessageData(newArray)
-				setMessageData((prev) => {
-					return prev.map(message => {
-						if (message._id === _id) {
-							return {
-								...message,
-								status: "seen",
-								unseen: "rerender"
-							}
-						}
-						return message
-					})
-				})
-			}
-		})
+		// socket.current.on("getMessageSeen", ({ _id, conversationId }) => {
+		// 	console.log("message Seen", _id, conversationId)
+		// 	if (messageConversation?._id === conversationId) {
+		// 		// getMessages()
+		// 		// let newArray = messageData
+		// 		// for (let i = 0; i < newArray.length; i++) {
+		// 		// 	if(newArray[i]._id === _id){
+		// 		// 		console.log("seen")
+		// 		// 		newArray[i].status = "seen"
+		// 		// 	}
+		// 		// }
+		// 		// setMessageData(newArray)
+		// 		setMessageData((prev) => {
+		// 			return prev.map(message => {
+		// 				if (message._id === _id) {
+		// 					return {
+		// 						...message,
+		// 						status: "seen",
+		// 					}
+		// 				}
+		// 				return message
+		// 			})
+		// 		})
+		// 	}
+		// })
 		socket.current.on("getMessageDelivered", ({ _id, conversationId, all }) => {
 			console.log("message delivered", messageConversation, conversationId)
 			if (messageConversation?._id === conversationId) {

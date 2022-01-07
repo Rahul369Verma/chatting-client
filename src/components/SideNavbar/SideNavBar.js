@@ -4,9 +4,10 @@ import { NavigatorContext } from '../../context/Navigator';
 import SideNav, { NavItem, NavIcon } from '@trendmicro/react-sidenav';
 import { useLocation } from 'react-router-dom';
 import '@trendmicro/react-sidenav/dist/react-sidenav.css';
+import "./SideNavBar.css"
 
 
-const SideNavBar = () => {
+const SideNavBar = ({open}) => {
 
   const { state } = useContext(Context)
   const { navigator, navigatorDispatch } = useContext(NavigatorContext)
@@ -29,7 +30,7 @@ const SideNavBar = () => {
   // }, [navigator])
 
   return (
-    <div className={navigator}>
+    <div className={!open && "none"}>
       {(state.email || state.username) && (location.pathname === "/chatting") && (
         <SideNav onSelect={(selected) => {
           console.log(selected)

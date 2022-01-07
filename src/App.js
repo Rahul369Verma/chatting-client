@@ -11,9 +11,12 @@ import { Provider } from './context';
 import { NavigatorProvider } from './context/Navigator';
 import { SocketProvider } from './context/socket'
 import SideNavBar from './components/SideNavbar/SideNavBar'
+import { useState } from 'react'
 
 
 const App = () => {
+
+  const [open, setOpen] = useState(true)
 
 
   return (
@@ -23,12 +26,12 @@ const App = () => {
           <BrowserRouter>
             <Navigator />
             <div style={{ display: "flex" }}>
-              <SideNavBar />
+              <SideNavBar open={open} />
               <Switch> {/* by switch we can handle err page */}
                 <Route exact path='/'><Home /></Route>
                 <Route exact path='/register'><Register /></Route>
                 <Route exact path='/login'><Login /></Route>
-                <Route exact path='/chatting'><Chatting /></Route>
+                <Route exact path='/chatting'><Chatting setOpen={setOpen} /></Route>
                 <Route exact path='/logout'><Logout /></Route>
                 <Route><Error /></Route> {/* Error Page */}
               </Switch>

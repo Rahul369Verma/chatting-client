@@ -59,8 +59,8 @@ const Login = () => {
 
   return (
     <div className="whole">
-      <div className="">
-        <form className="inner" onSubmit={formSubmit}>
+      <div className="outer-div">
+        <form className="inner-div" onSubmit={formSubmit}>
 
           <h3>Log in</h3>
           <p style={{ marginRight: '30px' }}>{errMess}</p>

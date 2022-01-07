@@ -20,7 +20,7 @@ import Profile from "./profile/Profile";
 
 
 
-const Chatting = () => {
+const Chatting = ({setOpen}) => {
 
 
 	const { state } = useContext(Context)
@@ -233,12 +233,9 @@ const Chatting = () => {
 
 	useEffect(() => {
 		if (notFriend || messageConversation || messageFriend) {
-			navigatorDispatch({
-				type: "CHANGE",
-				payload: "none"
-			})
+			setOpen(false)
 		}
-	}, [notFriend, messageConversation, messageFriend, navigatorDispatch])
+	}, [notFriend, messageConversation, messageFriend, navigatorDispatch, setOpen])
 
 	// const MessageConversation = async (conversation, friendData) => {
 	// 	const response = await axios.post(process.env.REACT_APP_API_URL + "/isFriend?email=" + friendData.email
@@ -296,10 +293,7 @@ const Chatting = () => {
 	}
 
 	const AllClose = () => {
-		navigatorDispatch({
-			type: "CHANGE",
-			payload: "chat"
-		})
+		setOpen(true)
 		setFriendData(false)
 		sessionStorage.removeItem("friendData")
 		setMessageFriend(false)
@@ -319,7 +313,7 @@ const Chatting = () => {
 						{navigator.selected === "profile" && <div>
 							<Profile />
 						</div>}
-						{(navigator.selected === "chat" || navigator.selected === "none") && <div>
+						{(navigator.selected === "chat") && <div>
 							<Chat getMessage={getMessage} setGetMessage={setGetMessage} messageConversation={messageConversation} MessageFriend={MessageFriend} activeUsers={activeUsers} />
 						</div>}
 						{navigator.selected === "friends" && <div>

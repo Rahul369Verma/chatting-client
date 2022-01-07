@@ -66,7 +66,7 @@ const Navigator = () => {
     <div style={{ width: "100%" }}>
       <Navbar className="outerNavbar" bg="light" expand="sm" fixed="top" collapseOnSelect>
         <Container style={{ display: "flex" }}>
-          <Navbar.Brand className="m-0 p-0" href="/">
+          <Navbar.Brand className="mr-4" href="/">
             <img
               src="https://www.logolynx.com/images/logolynx/21/214fba9d9e8566bf92d15c66bf919d16.png"
               width="30"

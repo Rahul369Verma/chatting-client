@@ -64,32 +64,34 @@ const Register = () => {
 
   return (
     <div className="whole">
-      <form className="inner" onSubmit={formSubmit}>
-        <h3>Register</h3>
-        <p style={{ marginRight: '30px' }}>{errMess}</p>
-        <div className="form-group">
-          <label>Name</label>
-          <input type="text" value={name} onChange={getName}
-            className="form-control" placeholder="First name" />
-        </div>
+      <div className="outer-div">
+        <form className="inner-div" onSubmit={formSubmit}>
+          <h3>Register</h3>
+          <p style={{ marginRight: '30px' }}>{errMess}</p>
+          <div className="form-group">
+            <label>Name</label>
+            <input type="text" value={name} onChange={getName}
+              className="form-control" placeholder="First name" />
+          </div>
 
-        <div className="form-group">
-          <label>Email</label>
-          <input type="email" value={email} onChange={getEmail}
-            className="form-control" placeholder="Enter email" />
-        </div>
+          <div className="form-group">
+            <label>Email</label>
+            <input type="email" value={email} onChange={getEmail}
+              className="form-control" placeholder="Enter email" />
+          </div>
 
-        <div className="form-group">
-          <label>Password</label>
-          <input type="password" value={password} onChange={getPassword}
-            className="form-control" placeholder="Enter password" />
-        </div>
+          <div className="form-group">
+            <label>Password</label>
+            <input type="password" value={password} onChange={getPassword}
+              className="form-control" placeholder="Enter password" />
+          </div>
 
-        <button type="submit" className="btn btn-dark btn-lg btn-block">Register</button>
-        <p className="forgot-password text-right">
-          Already registered <a href="/login">log in?</a>
-        </p>
-      </form>
+          <button type="submit" className="btn btn-dark btn-lg btn-block">Register</button>
+          <p className="forgot-password text-right">
+            Already registered <a href="/login">log in?</a>
+          </p>
+        </form>
+      </div>
     </div>
   )
 }

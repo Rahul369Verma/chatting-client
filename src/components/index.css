@@ -4,6 +4,8 @@ body{
 }
   
   .whole {
+    display: block;
+    position: relative;
     min-height: 90vh;
     font-weight: 400;
     font-family: sans-serif;
@@ -13,9 +15,18 @@ body{
     
   }
   
-  .whole, .App, .outer {
+  .whole, .App, .outer-div {
     width: 100%;
     height: 100%;
+  }
+  .outer-div{
+    position: absolute;    
+    left: 25%;
+    right: 20%;
+    height: 50%;
+    top: 20%;
+    justify-content: center;
+    width: 100vh;
   }
   
   .navbar-light {
@@ -23,12 +34,7 @@ body{
     box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   }
   
-  .inner {
-    position: absolute;
-    left: 60vh;
-    top: 20vh;
-    width: 80vh;
-    margin: auto;
+  .inner-div {
     background: #ffffff;
     box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
     padding: 40px 55px 45px 55px;
@@ -36,12 +42,12 @@ body{
     transition: all .3s;
   }
   
-  .outer .form-control:focus {
+  .outer-div .form-control:focus {
     border-color: #167bff;
     box-shadow: none;
   }
   
-  .outer h3 {
+  .outer-div h3 {
     text-align: center;
     margin: 0;
     line-height: 1;
@@ -63,4 +69,11 @@ body{
   
   .forgot-password a {
     color: #167bff;
+  }
+  @media screen and (max-width: 576px) {
+    .outer-div{
+      left: 0vh;
+      right: 0vh;
+      width: 100%;
+    }
   }

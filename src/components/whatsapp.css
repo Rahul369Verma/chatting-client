@@ -72,3 +72,19 @@
 .chat-list {
   margin: 0;
 }
+@media screen and (max-width: 576px) {
+  .right.hide {
+    display: none;
+  }
+  .left.hide{
+    width: 100%;
+  }
+}
+@media screen and (max-width: 576px) {
+  .right.show {
+    width: 100%;   
+  }
+  .left.show{
+    display: none;
+  }
+}

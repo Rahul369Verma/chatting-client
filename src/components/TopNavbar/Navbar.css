@@ -1,0 +1,13 @@
+
+
+.outerNavbar {
+  position: relative;
+  width: 100%;
+  height: 10vh;
+}
+
+@media screen and (max-width: 576px) {
+  .outerNavbar {
+    height: auto;
+  }
+}

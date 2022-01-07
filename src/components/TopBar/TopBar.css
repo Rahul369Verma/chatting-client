@@ -7,3 +7,12 @@
   -webkit-backdrop-filter: blur(7px);
   backdrop-filter: blur(7px);
 }
+
+.showArrow{
+  display: none
+}
+@media screen and (max-width: 576px) {
+  .showArrow{
+    display: block;
+  }
+}

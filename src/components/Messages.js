@@ -35,14 +35,14 @@ const Messages = ({ setMessageConversation, message, index, messageConversation 
     position: "relative",
     display: "flex",
     justifyContent: "end",
-    maxWidth: "400px"
+    maxWidth: "40vh"
 
   }
   const receiverInner = {
     position: "relative",
     display: "flex",
     justifyContent: "start",
-    maxWidth: "400px"
+    maxWidth: "50vh"
   }
 
   // useEffect(() => {

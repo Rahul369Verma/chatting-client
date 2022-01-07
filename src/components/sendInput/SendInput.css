@@ -1,30 +1,36 @@
 .outer {
+  width: 100%;
   display: flex;
   position: relative;
   height: 15vh;
   /* top: 0%; */
   background-color: #f2f2f2;
 }
-.inner-form {
-  padding-top: 20px;
-  display: flex;
+.inner-div {
+  /* padding-top: 20px; */
+  display: block;
+  /* align-self: center; */
   width: 100%;
 }
 
+.inner-form{
+  justify-content: center;
+}
+
 .form-input {
-  height: 100%;
-  margin-right: 20px;
-  width: 600px;
-  margin-left: 10px;
-  height: 90%;
+  /* height: 100%; */
+  /* margin-right: 20px; */
+  width: 70%;
+  /* margin-left: 10px; */
+  /* height: 90%; */
 }
-.form-button {
-  height: 90%;
-}
+/* .form-button { */
+  /* height: 90%; */
+/* } */
 .form-emoji {
   cursor: pointer;
   font-size: 20px;
   color: grey;
-  margin-left: 70px;
+  /* margin-left: ; */
 }
 

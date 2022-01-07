@@ -6,11 +6,22 @@ import { Context } from '../../context';
 import "./TopBar.css"
 
 
-const TopBar = ({ notFriend, MessageFriend, friendData, activeUsers, messageConversation }) => {
+const TopBar = ({ messageFriend, AllClose, notFriend, MessageFriend, friendData, activeUsers, messageConversation }) => {
 
   const { state } = useContext(Context)
   const [print, setPrint] = useState("Active")
   const { socket } = useContext(SocketContext)
+  // const [isDesktop, setDesktop] = useState(window.innerWidth > 1450);
+
+  // const updateMedia = () => {
+  //   setDesktop(window.innerWidth < 576);
+  // };
+
+  // useEffect(() => {
+  //   window.addEventListener("resize", updateMedia);
+  //   return () => window.removeEventListener("resize", updateMedia);
+  // });
+
 
   useEffect(() => {
     socket.socket?.current.on("typing", ({ messageConversationId }) => {
@@ -38,7 +49,10 @@ const TopBar = ({ notFriend, MessageFriend, friendData, activeUsers, messageConv
       {/* <div className="flex-shrink-0 d-block d me-2"> */}
       {/* </div> */}
       <div className="">
-        <div className="d-flex" style={{}}>
+        <div className="d-flex position-relative" style={{}}>
+          <div style={{cursor: "pointer"}} className={'pt-2 mx-2 ' + ((notFriend || messageConversation || messageFriend) ? "showArrow" : "hideArrow")}>
+            <ion-icon name="arrow-back" size="large" onClick={AllClose}></ion-icon>
+          </div>
           <div className="avatar-sm align-self-center" style={{}}>
             <span className="avatar-title rounded-circle bg-warning">{friendData.name?.slice(0, 1)}
             </span>

@@ -89,16 +89,22 @@ const SendInput = ({ setMessageConversation, messageConversationId, friendData, 
 
 
   return (
-    <div className='outer m-0'>
-      {toggle && <Picker native pickerStyle={{ position: "absolute", top: "-51vh" }} onEmojiClick={onEmojiClick} />}
-      <hr className="m-0 text-muted" />
-      <div className="mb-3 inner-form">
-        <form className="d-flex" onSubmit={sendMessage} ref={(el) => { }}>
-          <i onClick={() => setToggle(!toggle)} className="bi bi-emoji-smile p-2 form-emoji"></i>
-          <input className="form-control form-input" ref={inputRef} value={inputData}
-            type="search" placeholder="Search" aria-label="Search" onChange={changeInput} />
-          <button className="btn btn-success m-0 form-button" type="submit">Send</button>
-        </form>
+    <div>
+      <div className='position-absolute' style={{ top: "30%" }}>
+        {toggle && <Picker native pickerStyle={{}} onEmojiClick={onEmojiClick} />}
+      </div>
+      <div className='outer m-0'>
+        {/* <hr className="m-0 text-muted" /> */}
+        {/* <div style={{}}> */}
+        <div className="mb-3 inner-div pt-4">
+          <form className="d-flex inner-form" onSubmit={sendMessage}>
+            <i onClick={() => setToggle(!toggle)} className="bi bi-emoji-smile p-2 form-emoji"></i>
+            <input className="form-control form-input" ref={inputRef} value={inputData}
+              type="search" placeholder="Search" aria-label="Search" onChange={changeInput} />
+            <button className="btn btn-success mx-2 m-0 form-button" type="submit">Send</button>
+          </form>
+        </div>
+        {/* </div> */}
       </div>
     </div>
   )

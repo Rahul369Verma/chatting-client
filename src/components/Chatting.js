@@ -4,7 +4,6 @@ import { Context } from '../context';
 import "./whatsapp.css"
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Messages from "./Messages";
-import Conversation from "./conversation/Conversation";
 import Others from "./others/Others";
 import Friends from "./friends/Friends";
 import Auth from '../isAuth';
@@ -17,6 +16,7 @@ import Chat from "./chat/Chat";
 import FriendRequests from "./friendRequest/FriendRequests";
 import Loader from "./loader/loader";
 import NotFriends from "./sendInput/NotFriend";
+import Profile from "./profile/Profile";
 
 
 
@@ -231,6 +231,15 @@ const Chatting = () => {
 		}
 	}, [messageConversation?._id])
 
+	useEffect(() => {
+		if (notFriend || messageConversation || messageFriend) {
+			navigatorDispatch({
+				type: "CHANGE",
+				payload: "none"
+			})
+		}
+	}, [notFriend, messageConversation, messageFriend, navigatorDispatch])
+
 	// const MessageConversation = async (conversation, friendData) => {
 	// 	const response = await axios.post(process.env.REACT_APP_API_URL + "/isFriend?email=" + friendData.email
 	// 		, { withCredentials: true })
@@ -286,15 +295,31 @@ const Chatting = () => {
 		}
 	}
 
-
+	const AllClose = () => {
+		navigatorDispatch({
+			type: "CHANGE",
+			payload: "chat"
+		})
+		setFriendData(false)
+		sessionStorage.removeItem("friendData")
+		setMessageFriend(false)
+		sessionStorage.removeItem("messageFriend")
+		setMessageConversation(false)
+		sessionStorage.removeItem("messageConversation")
+		setNotFriend(false)
+		sessionStorage.removeItem("notFriend")
+	}
 
 
 	if (Auth.getAuth()) {
 		return (
 			<div className="split" style={{}}>
 				<div className="d-flex">
-					<div className="left">
-						{navigator.selected === "chat" && <div>
+					<div className={"left " + ((notFriend || messageConversation || messageFriend) ? "show" : "hide")}>
+						{navigator.selected === "profile" && <div>
+							<Profile />
+						</div>}
+						{(navigator.selected === "chat" || navigator.selected === "none") && <div>
 							<Chat getMessage={getMessage} setGetMessage={setGetMessage} messageConversation={messageConversation} MessageFriend={MessageFriend} activeUsers={activeUsers} />
 						</div>}
 						{navigator.selected === "friends" && <div>
@@ -306,30 +331,11 @@ const Chatting = () => {
 						{navigator.selected === "friendRequests" && <div>
 							<FriendRequests friendData={friendData} MessageFriend={MessageFriend} messageConversation={messageConversation} />
 						</div>}
-						{/* <div className="px-4 pt-2">
-							<div className="">
-								<h3>Recent</h3>
-								<ul>
-									{search.searchedItem.conversations.map((searchItem, i) => (
-										<Conversation conversation={searchItem} key={i} index={i} setMessageByConversation={MessageConversation} clicked={messageConversation} active={activeUsers} />
-									))}
-								</ul>
-							</div>
-							<h3>Friends</h3>
-							{search.searchedItem.friends.map((searchItem, i) => (
-								<Friends data={searchItem} key={i} index={i} setMessageByFriend={MessageFriend} clicked={messageFriend} />
-							))}
-							<h3>Others</h3>
-							{search.searchedItem.others.map((searchItem, i) => {
-								if (searchItem.email === state.email) return null
-								return <Others data={searchItem} key={i} index={i} />
-							})}
-						</div> */}
 
 					</div >
 					<div className={"split right " + ((notFriend || messageConversation || messageFriend) ? "show" : "hide")} id="wrapper">
 						<div className="message-outer">
-							{(friendData) ? <TopBar notFriend={notFriend} MessageFriend={MessageFriend} friendData={friendData} activeUsers={activeUsers} messageConversation={messageConversation} /> : <></>}
+							{(friendData) ? <TopBar messageFriend={messageFriend} AllClose={AllClose} notFriend={notFriend} MessageFriend={MessageFriend} friendData={friendData} activeUsers={activeUsers} messageConversation={messageConversation} /> : <></>}
 							<ul className="force-overflow scrollbar" id="message-scroll">
 								<div>
 									{

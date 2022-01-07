@@ -13,9 +13,23 @@ const SideNavBar = () => {
   const [selectedState, setSelectedState] = useState("chat")
   const location = useLocation();
 
+  const sideCss = {
+    backgroundColor: "#2e2e2e",
+    position: "relative",
+    height: "90vh",
+    zIndex: "1",
+    overflowX: "hidden",
+    width: "5%",
+    display: ""
+  }
+
+  // useEffect(() => {
+    // console.log(navigator)
+    // setSelectedState(navigator)
+  // }, [navigator])
 
   return (
-    <div>
+    <div className={navigator}>
       {(state.email || state.username) && (location.pathname === "/chatting") && (
         <SideNav onSelect={(selected) => {
           console.log(selected)
@@ -24,7 +38,7 @@ const SideNavBar = () => {
             type: "CHANGE",
             payload: selected
           })
-        }} style={{ backgroundColor: "#2e2e2e", position: "relative", height: "90vh", zIndex: "1", overflowX: "hidden", width: "5%", display: "" }}>
+        }} style={sideCss}>
           <SideNav.Nav defaultSelected="chat">
             <NavItem eventKey="profile" style={{}}>
               <NavIcon>
@@ -64,7 +78,7 @@ const SideNavBar = () => {
           </SideNav.Nav>
         </SideNav>
       )}
-      
+
     </div>
   )
 }

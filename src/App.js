@@ -1,7 +1,7 @@
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import Home from './components/Home'
 import Register from './components/Register'
-import Navigator from "./components/Navigator"
+import Navigator from "./components/TopNavbar/Navigator"
 import Login from "./components/Login"
 import Chatting from "./components/Chatting"
 import Logout from "./components/Logout";

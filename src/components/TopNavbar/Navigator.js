@@ -1,11 +1,12 @@
 import { useContext, useState, useEffect } from "react"
-import { Context } from '../context';
-import RegisterAdmin from './RegisterAdmin'
+import { Context } from '../../context';
+import RegisterAdmin from '../RegisterAdmin'
 import { Nav, NavDropdown, Navbar, Container } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import axios from "axios";
-import NotificationModal from "./NotificationModal";
-import { SocketContext } from "../context/socket";
+import NotificationModal from "../NotificationModal";
+import { SocketContext } from "../../context/socket";
+import "./Navbar.css"
 
 
 const Navigator = () => {
@@ -63,9 +64,9 @@ const Navigator = () => {
 
   return (
     <div style={{ width: "100%" }}>
-      <Navbar style={{ position: "relative", width: "100%", height: "10vh", zIndex: "" }} bg="light" expand="sm" fixed="top" collapseOnSelect>
+      <Navbar className="outerNavbar" bg="light" expand="sm" fixed="top" collapseOnSelect>
         <Container style={{ display: "flex" }}>
-          <Navbar.Brand href="/">
+          <Navbar.Brand className="m-0 p-0" href="/">
             <img
               src="https://www.logolynx.com/images/logolynx/21/214fba9d9e8566bf92d15c66bf919d16.png"
               width="30"
@@ -77,7 +78,8 @@ const Navigator = () => {
             Rahul Verma
           </Navbar.Brand>
           <Navbar.Toggle style={{ backgroundColor: "" }} aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav" bg="light" style={{ zIndex: "4", position: "relative" }}>
+          <Navbar.Collapse id="basic-navbar-nav" bg="light"
+            style={{ backgroundColor: "	#F8F8F8", position: "relative" }}>
             <Nav className="me-auto">
               {(state.type === "admin") ? (
                 <>
@@ -99,14 +101,14 @@ const Navigator = () => {
               )}
               <RegisterAdmin isOpen={toggle} toggleModal={toggleModal} />
               <NotificationModal setNotificationReceived={setNotificationReceived} isOpen={toggleNotification} toggleModal={toggleNotificationModal} />
-              <Nav.Link href="/chatting">Chatting</Nav.Link>
-              <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+              {(state.email || state.username) && <Nav.Link href="/chatting">Chatting</Nav.Link>}
+              {/* <NavDropdown title="Dropdown" id="basic-nav-dropdown">
 
                 <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-              </NavDropdown>
+              </NavDropdown> */}
 
             </Nav>
 
@@ -114,8 +116,8 @@ const Navigator = () => {
               <>
                 <Nav.Link
                   onClick={toggleNotificationModal} >
-                  {notificationReceived ? <ion-icon size="large" style={{ color: "red", paddingTop: "10px" }} name="notifications"></ion-icon> :
-                    <ion-icon size="large" style={{ color: "pink", paddingTop: "10px" }} name="notifications"></ion-icon>}
+                  {notificationReceived ? <ion-icon size="large" style={{ color: "red" }} name="notifications"></ion-icon> :
+                    <ion-icon size="large" style={{ color: "pink" }} name="notifications"></ion-icon>}
                 </Nav.Link>
                 {(location.pathname === "/chatting") && <> </>
                   // <form className="d-flex" onSubmit={(e) => e.preventDefault()}>
@@ -126,7 +128,7 @@ const Navigator = () => {
                 }
 
                 <Nav>
-                  <li style={{ float: "left", paddingRight: "5px" }}>
+                  <li className="" style={{ float: "left", paddingRight: "5px" }}>
                     <Nav.Link href="/logout">Logout</Nav.Link>
                   </li>
                   <Nav.Link className="">

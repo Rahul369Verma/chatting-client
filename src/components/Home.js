@@ -9,7 +9,7 @@ const Home = () => {
 
   const { state } = useContext(Context)
 
-  window.location.replace("/chatting")
+  window.location.replace("/login")
   if (Auth.getAuth() || state.email === false) {
     return (
       //     <div className="whole">
